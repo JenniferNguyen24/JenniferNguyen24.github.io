@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jennifer Nguyen</title>
+  <meta name="description" content="Personal site of Jennifer Nguyen — CS, Mathematics, AI Research."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <span class="nav-logo" id="nav-logo-txt">Jennifer Nguyen</span>
+  <ul class="nav-links">
+    <li><a href="#journey">Journey</a></li>
+    <li><a href="#milestones">Milestones</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#writing">Writing</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-write" id="nav-write-btn">+ Write</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-photo-wrap">
+    <img id="hero-photo-img" src="" alt="Jennifer Nguyen" style="display:none"/>
+    <div class="hero-photo-placeholder" id="hero-photo-init">JN</div>
+  </div>
+
+  <p class="hero-eyebrow">Personal Site</p>
+  <h1 class="hero-name" id="hero-name">Jennifer Nguyen</h1>
+  <p class="hero-tagline" id="hero-tagline">Computer Science · Mathematics · AI Research</p>
+  <p class="hero-bio" id="hero-bio">
+    I study the mathematics of learning — probability, learning theory, and game theory — and explore how these ideas shape modern AI. This is where I document the journey.
+  </p>
+
+  <div class="hero-socials">
+    <a class="social-btn" id="social-github" href="#" style="display:none" target="_blank" rel="noopener">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      GitHub
+    </a>
+    <a class="social-btn" id="social-linkedin" href="#" style="display:none" target="_blank" rel="noopener">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      LinkedIn
+    </a>
+    <a class="social-btn" id="social-email" href="#" style="display:none">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Email
+    </a>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <svg width="16" height="20" viewBox="0 0 16 20" fill="none"><rect x="1" y="1" width="14" height="18" rx="7" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="6" r="2" fill="currentColor"/></svg>
+    Scroll
+  </div>
+</header>
+
+<!-- JOURNEY -->
+<section class="section" id="journey">
+  <p class="section-label">Chapter by chapter</p>
+  <h2 class="section-title">My Academic Journey</h2>
+  <div class="timeline">
+
+    <div class="tl-entry">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <p class="tl-period">2019 – 2022</p>
+        <h3 class="tl-institution">Your High School Name</h3>
+        <p class="tl-role">High School Student · Science Track</p>
+        <p class="tl-desc">Describe your high school experience — the subjects you loved, the teachers who shaped you, and the early spark that pointed you toward mathematics and CS.</p>
+        <div class="tl-tags"><span class="tag">Mathematics</span><span class="tag">Physics</span><span class="tag">CS</span></div>
+      </div>
+    </div>
+
+    <div class="tl-entry">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <p class="tl-period">2022</p>
+        <h3 class="tl-institution">National High School Graduation Exam</h3>
+        <p class="tl-role">THPT National Examination</p>
+        <p class="tl-desc">Write about your exam results and how this moment opened the door to university.</p>
+        <div class="tl-tags"><span class="tag">Score: XX.XX</span><span class="tag">Top XX%</span></div>
+      </div>
+    </div>
+
+    <div class="tl-entry">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <p class="tl-period">2022 – 2023 · Year 1</p>
+        <h3 class="tl-institution">Your University</h3>
+        <p class="tl-role">Bachelor of Computer Science · First Year</p>
+        <p class="tl-desc">Freshman year — foundations in algorithms, discrete math, and the first taste of probability theory that would define my direction.</p>
+        <div class="tl-tags"><span class="tag">GPA: X.X</span><span class="tag">Algorithms</span><span class="tag">Probability</span></div>
+      </div>
+    </div>
+
+    <div class="tl-entry">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <p class="tl-period">2023 – 2024 · Year 2</p>
+        <h3 class="tl-institution">Your University</h3>
+        <p class="tl-role">Bachelor of Computer Science · Second Year</p>
+        <p class="tl-desc">Deeper into learning theory and game theory. First research involvement and the beginning of serious mathematical work.</p>
+        <div class="tl-tags"><span class="tag">Learning Theory</span><span class="tag">Game Theory</span><span class="tag">Research</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MILESTONES -->
+<div class="section-wide" id="milestones">
+  <div class="section-wide-inner">
+    <p class="section-label">Highlights</p>
+    <h2 class="section-title">Achievements &amp; Milestones</h2>
+    <div class="cat-grid">
+
+      <div class="cat-card" data-letter="A" onclick="location.href='pages/achievements.html'" role="link" tabindex="0" aria-label="Go to Achievements">
+        <div class="cat-icon">🏆</div>
+        <div class="cat-title">Achievements</div>
+        <div class="cat-desc">Awards, honours, and recognition earned along the way.</div>
+        <div class="cat-link">Read more →</div>
+      </div>
+
+      <div class="cat-card" data-letter="S" onclick="location.href='pages/scholarships.html'" role="link" tabindex="0" aria-label="Go to Scholarships">
+        <div class="cat-icon">📜</div>
+        <div class="cat-title">Scholarships</div>
+        <div class="cat-desc">Funding, fellowships, and academic support received.</div>
+        <div class="cat-link">Read more →</div>
+      </div>
+
+      <div class="cat-card" data-letter="P" onclick="location.href='pages/publications.html'" role="link" tabindex="0" aria-label="Go to Publications">
+        <div class="cat-icon">✏️</div>
+        <div class="cat-title">Publications</div>
+        <div class="cat-desc">Papers, articles, and anything I've had the chance to publish.</div>
+        <div class="cat-link">Read more →</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section class="section" id="skills">
+  <p class="section-label">What I bring</p>
+  <h2 class="section-title">Skills &amp; Competencies</h2>
+  <div class="skills-grid">
+
+    <div class="skill-group">
+      <h3>Mathematics</h3>
+      <div class="skill-item">
+        <span class="skill-label">Probability Theory <span class="skill-pct">90%</span></span>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:90%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-label">Learning Theory <span class="skill-pct">85%</span></span>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-label">Game Theory <span class="skill-pct">80%</span></span>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <h3>Computer Science</h3>
+      <div class="skill-item">
+        <span class="skill-label">Algorithms &amp; Complexity <span class="skill-pct">85%</span></span>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-label">Machine Learning <span class="skill-pct">80%</span></span>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-label">Python / Research Code <span class="skill-pct">75%</span></span>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:75%"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <h3>Languages</h3>
+      <div class="skill-item">
+        <span class="skill-label">Vietnamese (Native) <span class="skill-pct">100%</span></span>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:100%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-label">English <span class="skill-pct">85%</span></span>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <h3>Research</h3>
+      <div class="skill-item">
+        <span class="skill-label">Mathematical Writing <span class="skill-pct">82%</span></span>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:82%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-label">Literature Review <span class="skill-pct">78%</span></span>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:78%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-label">Critical Analysis <span class="skill-pct">88%</span></span>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:88%"></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- WRITING / CATEGORIES -->
+<div class="section-wide" id="writing">
+  <div class="section-wide-inner">
+    <p class="section-label">Explore</p>
+    <h2 class="section-title">Writing &amp; Work</h2>
+    <div class="cat-grid">
+
+      <div class="cat-card" data-letter="S" onclick="location.href='pages/stories.html'" role="link" tabindex="0" aria-label="Go to Personal Stories">
+        <div class="cat-icon">✦</div>
+        <div class="cat-title">Personal Stories</div>
+        <div class="cat-desc">Reflections, experiences, and the moments that shaped who I am.</div>
+        <div class="cat-link">Read more →</div>
+      </div>
+
+      <div class="cat-card" data-letter="M" onclick="location.href='pages/math.html'" role="link" tabindex="0" aria-label="Go to Pure Math">
+        <div class="cat-icon">∑</div>
+        <div class="cat-title">Pure Math</div>
+        <div class="cat-desc">Notes, proofs, and musings on probability, learning theory, and game theory.</div>
+        <div class="cat-link">Read more →</div>
+      </div>
+
+      <div class="cat-card" data-letter="R" onclick="location.href='pages/research.html'" role="link" tabindex="0" aria-label="Go to AI Research">
+        <div class="cat-icon">◈</div>
+        <div class="cat-title">AI Research</div>
+        <div class="cat-desc">Papers, ideas, and explorations at the intersection of mathematics and AI.</div>
+        <div class="cat-link">Read more →</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <p class="section-label">Get in touch</p>
+  <h2 class="section-title">Let's Connect</h2>
+  <div class="contact-grid">
+    <p class="contact-intro">
+      I'm always happy to connect with fellow students, researchers, or anyone curious about mathematics and AI. Whether you have a question about a project or just want to say hello — feel free to reach out.
+    </p>
+    <div class="contact-links" id="contact-links"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>© <span id="footer-year"></span> <span id="footer-name">Jennifer Nguyen</span></p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    <div class="modal-eyebrow" id="modal-eyebrow"></div>
+    <h2 class="modal-title" id="modal-title"></h2>
+    <div class="modal-meta" id="modal-meta"></div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer-tags" id="modal-tags"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dash-overlay" id="dash-overlay" role="dialog" aria-modal="true">
+  <div class="dash-nav">
+    <span class="dash-nav-title">Dashboard</span>
+    <div class="dash-tabs">
+      <button class="dash-tab active" data-tab="write">Write</button>
+      <button class="dash-tab" data-tab="manage">Posts</button>
+      <button class="dash-tab" data-tab="edit" id="edit-tab" style="display:none">Editing</button>
+      <button class="dash-tab" data-tab="profile">Profile</button>
+    </div>
+    <button class="dash-close-btn" id="dash-close-btn">✕ Close</button>
+  </div>
+  <div class="dash-body">
+
+    <!-- WRITE -->
+    <div class="dash-view active" data-view="write">
+      <h2 class="form-title">New post</h2>
+      <form id="write-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="w-category">Section</label>
+            <select class="form-select cat-select" name="category" id="w-category"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="w-date">Date</label>
+            <input class="form-input" type="date" name="date" id="w-date"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="w-title">Title</label>
+          <input class="form-input" type="text" name="title" id="w-title" placeholder="e.g. On the Sample Complexity of PAC Learning" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="w-excerpt">One-line summary <span style="opacity:.5;text-transform:none;letter-spacing:0">(optional)</span></label>
+          <input class="form-input" type="text" name="excerpt" id="w-excerpt" placeholder="Shown as a preview in the list"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="w-body">Content</label>
+          <textarea class="form-textarea" name="body" id="w-body" rows="14" placeholder="Write freely. Blank lines separate paragraphs." required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="w-tags">Tags</label>
+          <input class="form-input" type="text" name="tags" id="w-tags" placeholder="probability, PAC-learning, game-theory"/>
+          <p class="form-hint">Comma-separated.</p>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Publish</button>
+          <button type="reset" class="btn-ghost">Clear</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- MANAGE -->
+    <div class="dash-view" data-view="manage">
+      <h2 class="form-title">Your posts</h2>
+      <div class="manage-list" id="manage-list"></div>
+    </div>
+
+    <!-- EDIT -->
+    <div class="dash-view" data-view="edit">
+      <h2 class="form-title">Edit post</h2>
+      <form id="edit-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="e-category">Section</label>
+            <select class="form-select cat-select" name="category" id="e-category"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="e-date">Date</label>
+            <input class="form-input" type="date" name="date" id="e-date"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="e-title">Title</label>
+          <input class="form-input" type="text" name="title" id="e-title" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="e-excerpt">One-line summary</label>
+          <input class="form-input" type="text" name="excerpt" id="e-excerpt"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="e-body">Content</label>
+          <textarea class="form-textarea" name="body" id="e-body" rows="14" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="e-tags">Tags</label>
+          <input class="form-input" type="text" name="tags" id="e-tags"/>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Save changes</button>
+          <button type="button" class="btn-ghost" onclick="switchDash('manage')">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="dash-view" data-view="profile">
+      <h2 class="form-title">Profile</h2>
+      <form id="profile-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="p-name">Name</label>
+          <input class="form-input" type="text" name="name" id="p-name" placeholder="Jennifer Nguyen"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="p-tagline">Tagline</label>
+          <input class="form-input" type="text" name="tagline" id="p-tagline" placeholder="Computer Science · Mathematics · AI Research"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="p-bio">Bio</label>
+          <textarea class="form-textarea" name="bio" id="p-bio" rows="3" placeholder="Short intro shown on the homepage."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="p-photo">Profile photo URL</label>
+          <input class="form-input" type="url" name="photoUrl" id="p-photo" placeholder="https://example.com/photo.jpg"/>
+          <p class="form-hint">Link to an image hosted online (GitHub, Imgur, etc.). Upload a photo to GitHub and paste its raw URL.</p>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="p-email">Email</label>
+          <input class="form-input" type="email" name="email" id="p-email" placeholder="you@example.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="p-github">GitHub username</label>
+          <input class="form-input" type="text" name="github" id="p-github" placeholder="yourusername"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="p-linkedin">LinkedIn username</label>
+          <input class="form-input" type="text" name="linkedin" id="p-linkedin" placeholder="yourusername"/>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Save profile</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — Jennifer Nguyen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:       #F7F3EC;
+      --bg-alt:   #EDE8DF;
+      --card:     #FEFCF8;
+      --accent:   #7A5C38;
+      --accent2:  #B8832A;
+      --ink:      #2C2416;
+      --muted:    #7A6E62;
+      --faint:    #C4BAB0;
+      --border:   rgba(122,92,56,0.14);
+      --border-hi:rgba(122,92,56,0.32);
+      --green:    #4A7C59;
+      --red:      #9B3A3A;
+      --shadow:   rgba(44,36,22,0.07);
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-weight:300;line-height:1.7;min-height:100vh;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    button{cursor:pointer;font-family:inherit}
+
+    /* ── TOP BAR ── */
+    .topbar{
+      position:sticky;top:0;z-index:100;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:.9rem 2rem;
+      background:rgba(247,243,236,.95);backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar-left{display:flex;align-items:center;gap:1.2rem}
+    .topbar-logo{font-family:'Playfair Display',serif;font-size:1rem;color:var(--accent)}
+    .topbar-badge{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;background:var(--bg-alt);color:var(--muted);padding:.2rem .6rem;border-radius:20px;border:1px solid var(--border)}
+    .topbar-right{display:flex;align-items:center;gap:.8rem}
+    .topbar-site-link{font-size:.75rem;color:var(--muted);letter-spacing:.06em;display:flex;align-items:center;gap:.35rem;transition:color .18s}
+    .topbar-site-link:hover{color:var(--accent)}
+
+    /* ── LAYOUT ── */
+    .layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 53px)}
+
+    /* ── SIDEBAR ── */
+    .sidebar{border-right:1px solid var(--border);padding:1.5rem 1rem;display:flex;flex-direction:column;gap:.2rem;background:var(--card)}
+    .sidebar-label{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);padding:.5rem .6rem .3rem;margin-top:.8rem}
+    .sidebar-label:first-child{margin-top:0}
+    .nav-btn{
+      display:flex;align-items:center;gap:.7rem;
+      padding:.55rem .75rem;border-radius:4px;
+      font-size:.84rem;color:var(--muted);
+      background:none;border:none;width:100%;text-align:left;
+      transition:background .18s,color .18s;
+    }
+    .nav-btn:hover{background:var(--bg-alt);color:var(--ink)}
+    .nav-btn.active{background:rgba(122,92,56,.1);color:var(--accent);font-weight:500}
+    .nav-btn-icon{font-size:.95rem;width:1.1rem;text-align:center;flex-shrink:0}
+
+    /* ── MAIN ── */
+    .main{padding:2rem 2.5rem;max-width:860px}
+
+    /* ── VIEWS ── */
+    .view{display:none}
+    .view.active{display:block}
+
+    /* ── SECTION TITLES ── */
+    .view-title{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--ink);margin-bottom:.4rem}
+    .view-sub{font-size:.83rem;color:var(--muted);margin-bottom:2rem}
+
+    /* ── GITHUB CONNECT ── */
+    .connect-card{
+      background:var(--card);border:1px solid var(--border);border-radius:8px;
+      padding:2rem;max-width:520px;
+    }
+    .connect-status{
+      display:flex;align-items:center;gap:.6rem;
+      font-size:.82rem;margin-bottom:1.5rem;
+      padding:.6rem .9rem;border-radius:4px;
+      background:var(--bg-alt);border:1px solid var(--border);
+    }
+    .status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .status-dot.connected{background:var(--green)}
+    .status-dot.disconnected{background:var(--faint)}
+    .connect-steps{font-size:.8rem;color:var(--muted);line-height:1.9;margin-bottom:1.5rem}
+    .connect-steps a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+    .connect-steps ol{padding-left:1.2rem}
+    .connect-steps li{margin-bottom:.3rem}
+
+    /* ── FORMS ── */
+    .form-group{margin-bottom:1.2rem}
+    .form-label{display:block;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.42rem}
+    .form-input,.form-textarea,.form-select{
+      width:100%;background:var(--card);border:1px solid var(--border);border-radius:4px;
+      padding:.6rem .85rem;color:var(--ink);font-family:'Inter',sans-serif;font-size:.88rem;
+      outline:none;transition:border-color .18s,box-shadow .18s;-webkit-appearance:none;
+    }
+    .form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(122,92,56,.09)}
+    .form-input::placeholder,.form-textarea::placeholder{color:var(--faint)}
+    .form-textarea{resize:vertical;min-height:260px;line-height:1.75;font-size:.88rem}
+    .form-textarea.mono{font-family:'JetBrains Mono',monospace;font-size:.82rem}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .form-hint{font-size:.72rem;color:var(--faint);margin-top:.3rem;line-height:1.5}
+    .form-hint a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+    .form-actions{display:flex;gap:.7rem;margin-top:1.6rem;align-items:center}
+
+    /* ── BUTTONS ── */
+    .btn{font-size:.82rem;padding:.55rem 1.3rem;border-radius:3px;letter-spacing:.02em;transition:all .18s;border:1px solid transparent;display:inline-flex;align-items:center;gap:.45rem}
+    .btn-primary{background:var(--accent);color:#FDF9F4;border-color:var(--accent)}
+    .btn-primary:hover{opacity:.86}
+    .btn-primary:disabled{opacity:.45;cursor:not-allowed}
+    .btn-ghost{background:none;color:var(--muted);border-color:var(--border)}
+    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+    .btn-danger{background:none;color:var(--red);border-color:rgba(155,58,58,.25)}
+    .btn-danger:hover{background:rgba(155,58,58,.07)}
+    .btn-sm{font-size:.72rem;padding:.28rem .65rem;border-radius:3px;border:1px solid var(--border);color:var(--muted);background:none;transition:all .18s}
+    .btn-sm:hover{border-color:var(--accent);color:var(--accent)}
+    .btn-sm.del:hover{border-color:var(--red);color:var(--red)}
+
+    /* ── TOOLBAR (editor) ── */
+    .editor-toolbar{
+      display:flex;gap:.3rem;flex-wrap:wrap;
+      padding:.6rem .8rem;background:var(--bg-alt);
+      border:1px solid var(--border);border-bottom:none;
+      border-radius:4px 4px 0 0;
+    }
+    .editor-toolbar + .form-textarea{border-radius:0 0 4px 4px}
+    .tool-btn{
+      font-size:.72rem;padding:.22rem .55rem;border-radius:3px;
+      border:1px solid var(--border);color:var(--muted);background:var(--card);
+      transition:all .15s;font-family:'JetBrains Mono',monospace;
+    }
+    .tool-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .tool-sep{width:1px;background:var(--border);margin:0 .2rem;align-self:stretch}
+
+    /* ── PREVIEW ── */
+    .preview-pane{
+      background:var(--card);border:1px solid var(--border);border-radius:4px;
+      padding:1.5rem 1.8rem;min-height:200px;
+      font-size:.9rem;color:var(--muted);line-height:1.85;
+      display:none;
+    }
+    .preview-pane.visible{display:block}
+    .preview-pane h1,.preview-pane h2,.preview-pane h3{font-family:'Playfair Display',serif;color:var(--ink);margin:1.2rem 0 .5rem}
+    .preview-pane h1{font-size:1.5rem}
+    .preview-pane h2{font-size:1.2rem}
+    .preview-pane h3{font-size:1rem}
+    .preview-pane p{margin-bottom:.9rem}
+    .preview-pane code{font-family:'JetBrains Mono',monospace;font-size:.8rem;background:var(--bg-alt);padding:.1rem .35rem;border-radius:3px;color:var(--ink)}
+    .preview-pane pre{background:var(--bg-alt);padding:1rem;border-radius:4px;overflow-x:auto;margin-bottom:.9rem}
+    .preview-pane pre code{background:none;padding:0}
+    .preview-pane blockquote{border-left:3px solid var(--accent);padding-left:1rem;color:var(--muted);font-style:italic;margin-bottom:.9rem}
+    .preview-pane strong{color:var(--ink);font-weight:500}
+    .preview-pane em{font-style:italic}
+    .preview-pane ul,.preview-pane ol{padding-left:1.4rem;margin-bottom:.9rem}
+    .preview-pane li{margin-bottom:.3rem}
+    .preview-pane a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+    .preview-tab-bar{display:flex;gap:.4rem;margin-bottom:0}
+    .preview-tab{font-size:.73rem;padding:.3rem .8rem;border:1px solid var(--border);border-bottom:none;border-radius:3px 3px 0 0;color:var(--muted);background:var(--bg-alt);transition:all .15s}
+    .preview-tab.active{background:var(--card);color:var(--accent);border-color:var(--border);border-bottom-color:var(--card)}
+
+    /* ── POSTS LIST ── */
+    .posts-list{display:flex;flex-direction:column;gap:0}
+    .post-row{
+      display:flex;align-items:center;gap:1rem;
+      padding:1rem 0;border-bottom:1px solid var(--border);
+    }
+    .post-row:last-child{border-bottom:none}
+    .post-info{flex:1;min-width:0}
+    .post-row-title{font-size:.9rem;color:var(--ink);font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.18rem}
+    .post-row-meta{font-size:.7rem;color:var(--faint);display:flex;gap:.9rem;align-items:center}
+    .post-row-cat{display:inline-block;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;padding:.1rem .45rem;border-radius:2px;border:1px solid var(--border);color:var(--accent2)}
+    .post-row-actions{display:flex;gap:.4rem;flex-shrink:0}
+    .post-empty{padding:3rem 0;color:var(--faint);font-style:italic;font-size:.88rem}
+
+    /* ── STATUS / ALERTS ── */
+    .alert{
+      display:flex;align-items:flex-start;gap:.7rem;
+      padding:.8rem 1rem;border-radius:4px;font-size:.82rem;line-height:1.5;
+      margin-bottom:1.2rem;
+    }
+    .alert.success{background:rgba(74,124,89,.09);border:1px solid rgba(74,124,89,.25);color:var(--green)}
+    .alert.error{background:rgba(155,58,58,.08);border:1px solid rgba(155,58,58,.22);color:var(--red)}
+    .alert.info{background:rgba(122,92,56,.07);border:1px solid var(--border);color:var(--muted)}
+    .alert-icon{flex-shrink:0;margin-top:.1rem}
+
+    /* ── SPINNER ── */
+    .spinner{
+      width:14px;height:14px;border:2px solid rgba(255,255,255,.3);
+      border-top-color:#FDF9F4;border-radius:50%;
+      animation:spin .7s linear infinite;flex-shrink:0;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ── SETTINGS ── */
+    .settings-section{margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border)}
+    .settings-section:last-child{border-bottom:none}
+    .settings-title{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent2);margin-bottom:1.2rem}
+    .token-display{
+      display:flex;align-items:center;gap:.6rem;
+      background:var(--bg-alt);border:1px solid var(--border);border-radius:4px;
+      padding:.55rem .85rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);
+    }
+    .token-display span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:680px){
+      .layout{grid-template-columns:1fr}
+      .sidebar{display:flex;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--border);padding:.8rem}
+      .sidebar-label{display:none}
+      .main{padding:1.4rem}
+      .form-row{grid-template-columns:1fr}
+    }
+    /* ── LOCK SCREEN ── */
+    .lock-screen{
+      position:fixed;inset:0;z-index:9999;
+      background:var(--bg);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .lock-card{
+      background:var(--card);border:1px solid var(--border);border-radius:10px;
+      padding:2.8rem 2.4rem;width:100%;max-width:360px;text-align:center;
+      box-shadow:0 8px 40px var(--shadow);
+    }
+    .lock-icon{font-size:2rem;margin-bottom:1.2rem}
+    .lock-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--ink);margin-bottom:.3rem}
+    .lock-sub{font-size:.8rem;color:var(--faint);margin-bottom:1.8rem}
+    .lock-input{
+      width:100%;background:var(--bg-alt);border:1px solid var(--border);border-radius:4px;
+      padding:.65rem 1rem;color:var(--ink);font-family:'Inter',sans-serif;font-size:.95rem;
+      outline:none;text-align:center;letter-spacing:.08em;transition:border-color .18s,box-shadow .18s;
+      margin-bottom:1rem;
+    }
+    .lock-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(122,92,56,.09)}
+    .lock-input.shake{animation:shake .35s ease}
+    .lock-error{font-size:.75rem;color:var(--red);margin-bottom:.8rem;min-height:1.1em}
+    .lock-btn{
+      width:100%;padding:.65rem;background:var(--accent);color:#FDF9F4;
+      border:none;border-radius:4px;font-size:.85rem;letter-spacing:.06em;
+      font-family:'Inter',sans-serif;cursor:pointer;transition:opacity .18s;
+    }
+    .lock-btn:hover{opacity:.86}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  </style>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div class="lock-screen" id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-icon">🔒</div>
+    <h1 class="lock-title">Dashboard</h1>
+    <p class="lock-sub">Enter your password to continue</p>
+    <input class="lock-input" type="password" id="lock-input" placeholder="••••••••" autocomplete="current-password" maxlength="64"/>
+    <div class="lock-error" id="lock-error"></div>
+    <button class="lock-btn" id="lock-btn">Unlock</button>
+  </div>
+</div>
+<header class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-logo">Jennifer Nguyen</span>
+    <span class="topbar-badge">Dashboard</span>
+  </div>
+  <div class="topbar-right">
+    <a class="topbar-site-link" href="index.html">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      View site
+    </a>
+    <div id="topbar-status" style="font-size:.75rem;color:var(--faint)">Not connected</div>
+    <button onclick="lockDashboard()" style="font-size:.72rem;padding:.3rem .75rem;border:1px solid var(--border);border-radius:3px;background:none;color:var(--muted);cursor:pointer;transition:all .18s" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">🔒 Lock</button>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <span class="sidebar-label">Content</span>
+    <button class="nav-btn active" data-view="write">
+      <span class="nav-btn-icon">✏️</span> New post
+    </button>
+    <button class="nav-btn" data-view="posts">
+      <span class="nav-btn-icon">📂</span> All posts
+    </button>
+    <span class="sidebar-label">Setup</span>
+    <button class="nav-btn" data-view="connect">
+      <span class="nav-btn-icon">🔗</span> GitHub
+    </button>
+    <button class="nav-btn" data-view="settings">
+      <span class="nav-btn-icon">⚙️</span> Settings
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ── VIEW: WRITE ── -->
+    <div class="view active" id="view-write">
+      <h1 class="view-title">New post</h1>
+      <p class="view-sub">Write your post below. It will be saved as a Markdown file in your GitHub repo.</p>
+
+      <div id="write-alert"></div>
+
+      <form id="write-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="p-category">Section</label>
+            <select class="form-select" name="category" id="p-category">
+              <option value="stories">Personal Stories</option>
+              <option value="math">Pure Math</option>
+              <option value="research">AI Research</option>
+              <option value="achievements">Achievements</option>
+              <option value="scholarships">Scholarships</option>
+              <option value="publications">Publications</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="p-date">Date</label>
+            <input class="form-input" type="date" name="date" id="p-date"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="p-title">Title *</label>
+          <input class="form-input" type="text" name="title" id="p-title" placeholder="e.g. On the Sample Complexity of PAC Learning" required/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="p-excerpt">Summary <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:.9em">(optional — shown as preview)</span></label>
+          <input class="form-input" type="text" name="excerpt" id="p-excerpt" placeholder="One sentence that captures the post"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Content * <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:.9em">— Markdown supported</span></label>
+          <div class="preview-tab-bar">
+            <button type="button" class="preview-tab active" id="tab-write">Write</button>
+            <button type="button" class="preview-tab" id="tab-preview">Preview</button>
+          </div>
+          <div class="editor-toolbar" id="editor-toolbar">
+            <button type="button" class="tool-btn" data-wrap="**" title="Bold">B</button>
+            <button type="button" class="tool-btn" data-wrap="*" title="Italic"><em>i</em></button>
+            <button type="button" class="tool-btn" data-prefix="## " title="Heading">H2</button>
+            <button type="button" class="tool-btn" data-prefix="### " title="Heading 3">H3</button>
+            <div class="tool-sep"></div>
+            <button type="button" class="tool-btn" data-prefix="- " title="List">— list</button>
+            <button type="button" class="tool-btn" data-prefix="> " title="Quote">" quote</button>
+            <button type="button" class="tool-btn" data-wrap="`" title="Inline code">` code</button>
+            <button type="button" class="tool-btn" data-block="```\n" data-blockend="\n```" title="Code block">``` block</button>
+            <div class="tool-sep"></div>
+            <button type="button" class="tool-btn" data-insert="$$\n\n$$" title="Math block">∑ math</button>
+          </div>
+          <textarea class="form-textarea mono" name="body" id="p-body" rows="18"
+            placeholder="Write in Markdown. Use ## for headings, **bold**, *italic*, `code`, > blockquote.
+
+For math: use $inline$ or $$block$$ (LaTeX)."></textarea>
+          <div class="preview-pane" id="preview-pane"></div>
+          <p class="form-hint">Markdown · <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener">syntax guide</a> · LaTeX math supported with $…$ and $$…$$</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="p-tags">Tags <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:.9em">(comma-separated)</span></label>
+          <input class="form-input" type="text" name="tags" id="p-tags" placeholder="probability, PAC-learning, game-theory"/>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="publish-btn">
+            Publish to GitHub
+          </button>
+          <button type="reset" class="btn btn-ghost">Clear</button>
+          <span id="publish-status" style="font-size:.78rem;color:var(--muted)"></span>
+        </div>
+      </form>
+    </div>
+
+    <!-- ── VIEW: POSTS ── -->
+    <div class="view" id="view-posts">
+      <h1 class="view-title">All posts</h1>
+      <p class="view-sub">Posts saved in your GitHub repo. Click a title to edit.</p>
+      <div id="posts-alert"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">
+        <select class="form-select" id="filter-cat" style="width:auto;min-width:180px">
+          <option value="">All sections</option>
+          <option value="stories">Personal Stories</option>
+          <option value="math">Pure Math</option>
+          <option value="research">AI Research</option>
+          <option value="achievements">Achievements</option>
+          <option value="scholarships">Scholarships</option>
+          <option value="publications">Publications</option>
+        </select>
+        <button class="btn btn-ghost" id="refresh-btn" style="font-size:.75rem">↺ Refresh</button>
+      </div>
+      <div class="posts-list" id="posts-list">
+        <p class="post-empty">Connect to GitHub first, then your posts will appear here.</p>
+      </div>
+    </div>
+
+    <!-- ── VIEW: CONNECT ── -->
+    <div class="view" id="view-connect">
+      <h1 class="view-title">Connect GitHub</h1>
+      <p class="view-sub">Your posts will be saved as Markdown files in your repo. This only needs to be set up once.</p>
+
+      <div id="connect-alert"></div>
+
+      <div class="connect-card">
+        <div class="connect-status">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">Not connected</span>
+        </div>
+
+        <div class="connect-steps">
+          <ol>
+            <li>Go to <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener">github.com/settings/tokens/new</a></li>
+            <li>Name it <strong>portfolio-dashboard</strong></li>
+            <li>Set expiration to <strong>No expiration</strong></li>
+            <li>Check the <strong>repo</strong> scope (full control)</li>
+            <li>Click <strong>Generate token</strong> and paste it below</li>
+          </ol>
+        </div>
+
+        <form id="connect-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="gh-token">Personal Access Token</label>
+            <input class="form-input" type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off"/>
+            <p class="form-hint">Stored only in your browser's localStorage. Never shared.</p>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="gh-owner">GitHub Username</label>
+            <input class="form-input" type="text" id="gh-owner" placeholder="yourusername"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="gh-repo">Repository Name</label>
+            <input class="form-input" type="text" id="gh-repo" placeholder="yourusername.github.io"/>
+            <p class="form-hint">The repo where your site lives.</p>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="connect-btn">Save &amp; verify</button>
+            <button type="button" class="btn btn-danger" id="disconnect-btn" style="display:none">Disconnect</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── VIEW: SETTINGS ── -->
+    <div class="view" id="view-settings">
+      <h1 class="view-title">Settings</h1>
+      <p class="view-sub">Manage your profile and site preferences.</p>
+
+      <div class="settings-section">
+        <p class="settings-title">Profile</p>
+        <form id="profile-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="s-name">Name</label>
+            <input class="form-input" type="text" name="name" id="s-name" placeholder="Jennifer Nguyen"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="s-tagline">Tagline</label>
+            <input class="form-input" type="text" name="tagline" id="s-tagline" placeholder="Computer Science · Mathematics · AI Research"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="s-bio">Bio</label>
+            <textarea class="form-textarea" name="bio" id="s-bio" rows="3" style="min-height:80px" placeholder="Short intro shown on the homepage."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="s-photo">Profile photo URL</label>
+            <input class="form-input" type="url" name="photoUrl" id="s-photo" placeholder="https://raw.githubusercontent.com/you/repo/main/photo.jpg"/>
+            <p class="form-hint">Upload an image to your GitHub repo and paste the raw URL here.</p>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="s-email">Email</label>
+            <input class="form-input" type="email" name="email" id="s-email" placeholder="you@example.com"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="s-github">GitHub username</label>
+            <input class="form-input" type="text" name="github" id="s-github" placeholder="yourusername"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="s-linkedin">LinkedIn username</label>
+            <input class="form-input" type="text" name="linkedin" id="s-linkedin" placeholder="yourusername"/>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save profile</button>
+            <span id="profile-saved" style="font-size:.78rem;color:var(--green);display:none">✓ Saved</span>
+          </div>
+        </form>
+      </div>
+
+      <div class="settings-section">
+        <p class="settings-title">Change Password</p>
+        <div class="form-group">
+          <label class="form-label" for="pw-current">Current password</label>
+          <input class="form-input" type="password" id="pw-current" placeholder="••••••••" autocomplete="current-password"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pw-new">New password</label>
+          <input class="form-input" type="password" id="pw-new" placeholder="••••••••" autocomplete="new-password"/>
+          <p class="form-hint">Minimum 6 characters.</p>
+        </div>
+        <div style="font-size:.75rem;color:var(--red);min-height:1.2em;margin-bottom:.8rem" id="pw-error"></div>
+        <button type="button" class="btn btn-ghost" onclick="changePassword()">Update password</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   LOCK SCREEN
+   Password is hashed with SHA-256 and stored in localStorage.
+   First visit: any password you enter SETS it.
+   After that: must match.
+═══════════════════════════════════════════ */
+const LOCK_KEY = 'jn_dashboard_pw';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function checkLock() {
+  const stored = localStorage.getItem(LOCK_KEY);
+  if (!stored) {
+    // First time: show "set password" hint
+    document.querySelector('.lock-sub').textContent = 'First visit — choose a password to protect this dashboard';
+    document.getElementById('lock-btn').textContent = 'Set password & enter';
+  }
+}
+
+async function tryUnlock() {
+  const val    = document.getElementById('lock-input').value;
+  const errEl  = document.getElementById('lock-error');
+  const input  = document.getElementById('lock-input');
+  if (!val) { errEl.textContent = 'Please enter a password.'; return; }
+
+  const hash   = await sha256(val);
+  const stored = localStorage.getItem(LOCK_KEY);
+
+  if (!stored) {
+    // First time — save this as the password
+    if (val.length < 6) { errEl.textContent = 'Choose at least 6 characters.'; shake(); return; }
+    localStorage.setItem(LOCK_KEY, hash);
+    unlock();
+  } else if (hash === stored) {
+    unlock();
+  } else {
+    errEl.textContent = 'Incorrect password.';
+    shake();
+    input.value = '';
+    input.focus();
+  }
+}
+
+function unlock() {
+  const screen = document.getElementById('lock-screen');
+  screen.style.opacity = '0';
+  screen.style.transition = 'opacity .25s';
+  setTimeout(() => screen.remove(), 260);
+}
+
+function shake() {
+  const input = document.getElementById('lock-input');
+  input.classList.remove('shake');
+  void input.offsetWidth; // reflow
+  input.classList.add('shake');
+}
+
+document.getElementById('lock-btn').addEventListener('click', tryUnlock);
+document.getElementById('lock-input').addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
+checkLock();
+
+/* ═══════════════════════════════════════════
+   STORAGE
+═══════════════════════════════════════════ */
+const GH_KEY      = 'jn_gh';
+const PROFILE_KEY = 'jn_profile';
+
+const loadGH      = () => { try { return JSON.parse(localStorage.getItem(GH_KEY)) || {}; } catch { return {}; } };
+const saveGH      = v => localStorage.setItem(GH_KEY, JSON.stringify(v));
+const loadProfile = () => { try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {}; } catch { return {}; } };
+const saveProfile = v => localStorage.setItem(PROFILE_KEY, JSON.stringify(v));
+
+/* ═══════════════════════════════════════════
+   GITHUB API
+═══════════════════════════════════════════ */
+function ghHeaders() {
+  const { token } = loadGH();
+  return { 'Authorization': `token ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' };
+}
+
+function ghBase() {
+  const { owner, repo } = loadGH();
+  return `https://api.github.com/repos/${owner}/${repo}`;
+}
+
+async function ghGet(path) {
+  const r = await fetch(ghBase() + path, { headers: ghHeaders() });
+  if (!r.ok) throw new Error(`GitHub ${r.status}: ${r.statusText}`);
+  return r.json();
+}
+
+async function ghPut(path, body) {
+  const r = await fetch(ghBase() + path, { method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body) });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.message || `GitHub ${r.status}`); }
+  return r.json();
+}
+
+async function ghDelete(path, body) {
+  const r = await fetch(ghBase() + path, { method: 'DELETE', headers: ghHeaders(), body: JSON.stringify(body) });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.message || `GitHub ${r.status}`); }
+  return r.json();
+}
+
+/* ═══════════════════════════════════════════
+   FILE PATHS & SLUGS
+═══════════════════════════════════════════ */
+function slug(title) {
+  return title.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').slice(0,60);
+}
+
+function postPath(category, title, date) {
+  return `_posts/${category}/${date}-${slug(title)}.md`;
+}
+
+/* ═══════════════════════════════════════════
+   MARKDOWN FRONT-MATTER
+═══════════════════════════════════════════ */
+function buildMarkdown({ title, excerpt, body, tags, category, date }) {
+  const tagList = tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+  const fm = [
+    '---',
+    `title: "${title.replace(/"/g, '\\"')}"`,
+    `date: ${date}`,
+    `category: ${category}`,
+    excerpt ? `excerpt: "${excerpt.replace(/"/g, '\\"')}"` : null,
+    tagList.length ? `tags: [${tagList.map(t=>`"${t}"`).join(', ')}]` : null,
+    '---',
+    '',
+  ].filter(t => t !== null).join('\n');
+  return fm + body;
+}
+
+function parseFrontMatter(raw) {
+  const match = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if (!match) return { body: raw };
+  const fm = {};
+  match[1].split('\n').forEach(line => {
+    const col = line.indexOf(':');
+    if (col === -1) return;
+    const key = line.slice(0, col).trim();
+    let val = line.slice(col + 1).trim().replace(/^["']|["']$/g, '');
+    fm[key] = val;
+  });
+  fm.body = match[2].trim();
+  return fm;
+}
+
+/* ═══════════════════════════════════════════
+   SIMPLE MARKDOWN RENDERER
+═══════════════════════════════════════════ */
+function renderMD(md) {
+  let html = esc(md)
+    // code blocks
+    .replace(/```[\s\S]*?```/g, m => `<pre><code>${m.slice(3,-3).replace(/^[^\n]*\n/,'')}</code></pre>`)
+    // inline code
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    // headings
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    // blockquote
+    .replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>')
+    // bold / italic
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    // lists
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    // links
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    // paragraphs
+    .replace(/\n\n+/g, '</p><p>')
+    ;
+  return '<p>' + html + '</p>';
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ═══════════════════════════════════════════
+   NAV / VIEW SWITCHING
+═══════════════════════════════════════════ */
+function switchView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+  if (name === 'posts') loadPosts();
+  if (name === 'connect') updateConnectUI();
+  if (name === 'settings') fillProfile();
+}
+
+/* ═══════════════════════════════════════════
+   GITHUB CONNECT VIEW
+═══════════════════════════════════════════ */
+function updateConnectUI() {
+  const gh = loadGH();
+  const connected = !!(gh.token && gh.owner && gh.repo);
+  document.getElementById('status-dot').className = 'status-dot ' + (connected ? 'connected' : 'disconnected');
+  document.getElementById('status-text').textContent = connected ? `Connected · ${gh.owner}/${gh.repo}` : 'Not connected';
+  document.getElementById('topbar-status').textContent = connected ? `${gh.owner}/${gh.repo}` : 'Not connected';
+  document.getElementById('disconnect-btn').style.display = connected ? 'inline-flex' : 'none';
+  if (connected) {
+    document.getElementById('gh-owner').value = gh.owner || '';
+    document.getElementById('gh-repo').value  = gh.repo  || '';
+  }
+}
+
+document.getElementById('connect-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const token = document.getElementById('gh-token').value.trim();
+  const owner = document.getElementById('gh-owner').value.trim();
+  const repo  = document.getElementById('gh-repo').value.trim();
+  if (!token || !owner || !repo) { showAlert('connect-alert', 'error', 'All three fields are required.'); return; }
+
+  const btn = document.getElementById('connect-btn');
+  btn.innerHTML = '<span class="spinner"></span> Verifying…';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!r.ok) throw new Error('Could not access that repo. Check the token and repo name.');
+    saveGH({ token, owner, repo });
+    updateConnectUI();
+    showAlert('connect-alert', 'success', `✓ Connected to ${owner}/${repo}. You can now publish posts.`);
+  } catch (err) {
+    showAlert('connect-alert', 'error', err.message);
+  } finally {
+    btn.innerHTML = 'Save &amp; verify';
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('disconnect-btn').addEventListener('click', () => {
+  if (!confirm('Disconnect GitHub? Your posts in the repo will remain.')) return;
+  saveGH({});
+  document.getElementById('gh-token').value = '';
+  updateConnectUI();
+  showAlert('connect-alert', 'info', 'Disconnected. Enter a new token to reconnect.');
+});
+
+/* ═══════════════════════════════════════════
+   WRITE / PUBLISH
+═══════════════════════════════════════════ */
+document.getElementById('p-date').value = new Date().toISOString().slice(0,10);
+
+document.getElementById('write-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const gh = loadGH();
+  if (!gh.token) { showAlert('write-alert','error','Connect to GitHub first (sidebar → GitHub).'); return; }
+
+  const title    = document.getElementById('p-title').value.trim();
+  const category = document.getElementById('p-category').value;
+  const date     = document.getElementById('p-date').value || new Date().toISOString().slice(0,10);
+  const excerpt  = document.getElementById('p-excerpt').value.trim();
+  const body     = document.getElementById('p-body').value.trim();
+  const tags     = document.getElementById('p-tags').value.trim();
+
+  if (!title) { showAlert('write-alert','error','Title is required.'); return; }
+  if (!body)  { showAlert('write-alert','error','Content is required.'); return; }
+
+  const btn = document.getElementById('publish-btn');
+  btn.innerHTML = '<span class="spinner"></span> Publishing…';
+  btn.disabled = true;
+  document.getElementById('publish-status').textContent = '';
+
+  try {
+    const content = buildMarkdown({ title, excerpt, body, tags, category, date });
+    const path    = postPath(category, title, date);
+    const encoded = btoa(unescape(encodeURIComponent(content)));
+
+    // check if file exists (for update)
+    let sha;
+    try { const existing = await ghGet('/contents/' + path); sha = existing.sha; } catch {}
+
+    await ghPut('/contents/' + path, {
+      message: sha ? `Update: ${title}` : `Add: ${title}`,
+      content: encoded,
+      ...(sha ? { sha } : {}),
+    });
+
+    showAlert('write-alert','success',`✓ Published! Saved to <code>_posts/${category}/${date}-${slug(title)}.md</code> in your repo.`);
+    document.getElementById('write-form').reset();
+    document.getElementById('p-date').value = new Date().toISOString().slice(0,10);
+    document.getElementById('p-body').value = '';
+  } catch (err) {
+    showAlert('write-alert','error','Failed to publish: ' + err.message);
+  } finally {
+    btn.innerHTML = 'Publish to GitHub';
+    btn.disabled = false;
+  }
+});
+
+/* ═══════════════════════════════════════════
+   LOAD & LIST POSTS
+═══════════════════════════════════════════ */
+let allPosts = [];
+
+async function loadPosts() {
+  const gh = loadGH();
+  const list = document.getElementById('posts-list');
+  if (!gh.token) { list.innerHTML = '<p class="post-empty">Connect to GitHub first.</p>'; return; }
+
+  list.innerHTML = '<p class="post-empty" style="color:var(--faint)">Loading…</p>';
+
+  try {
+    const categories = ['stories','math','research','achievements','scholarships','publications'];
+    const files = [];
+
+    await Promise.all(categories.map(async cat => {
+      try {
+        const items = await ghGet(`/contents/_posts/${cat}`);
+        items.filter(f => f.name.endsWith('.md')).forEach(f => files.push({ ...f, category: cat }));
+      } catch {}
+    }));
+
+    allPosts = files.sort((a,b) => b.name.localeCompare(a.name));
+    renderPostsList();
+  } catch (err) {
+    list.innerHTML = `<p class="post-empty" style="color:var(--red)">Error: ${err.message}</p>`;
+  }
+}
+
+function renderPostsList() {
+  const list  = document.getElementById('posts-list');
+  const filter = document.getElementById('filter-cat').value;
+  const posts  = filter ? allPosts.filter(p => p.category === filter) : allPosts;
+
+  const CAT_LABELS = { stories:'Personal Stories', math:'Pure Math', research:'AI Research', achievements:'Achievements', scholarships:'Scholarships', publications:'Publications' };
+
+  if (!posts.length) { list.innerHTML = '<p class="post-empty">No posts yet in this section.</p>'; return; }
+
+  list.innerHTML = posts.map(p => {
+    const nameParts = p.name.replace('.md','').split('-');
+    const dateStr   = nameParts.slice(0,3).join('-');
+    const titleStr  = nameParts.slice(3).join(' ');
+    return `
+    <div class="post-row" data-path="${p.path}" data-sha="${p.sha}" data-cat="${p.category}">
+      <div class="post-info">
+        <div class="post-row-title">${esc(titleStr || p.name)}</div>
+        <div class="post-row-meta">
+          <span class="post-row-cat">${CAT_LABELS[p.category]||p.category}</span>
+          <span>${dateStr}</span>
+        </div>
+      </div>
+      <div class="post-row-actions">
+        <button class="btn-sm edit-btn" data-path="${p.path}" data-sha="${p.sha}" data-cat="${p.category}">Edit</button>
+        <button class="btn-sm del del-btn" data-path="${p.path}" data-sha="${p.sha}" data-title="${esc(titleStr)}">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', () => loadForEdit(btn.dataset.path, btn.dataset.sha, btn.dataset.cat)));
+  list.querySelectorAll('.del-btn').forEach(btn => btn.addEventListener('click', () => deletePost(btn.dataset.path, btn.dataset.sha, btn.dataset.title)));
+}
+
+document.getElementById('filter-cat').addEventListener('change', renderPostsList);
+document.getElementById('refresh-btn').addEventListener('click', loadPosts);
+
+/* ═══════════════════════════════════════════
+   EDIT POST
+═══════════════════════════════════════════ */
+async function loadForEdit(path, sha, category) {
+  switchView('write');
+  document.getElementById('publish-status').textContent = 'Loading post…';
+
+  try {
+    const data    = await ghGet('/contents/' + path);
+    const raw     = decodeURIComponent(escape(atob(data.content.replace(/\s/g,''))));
+    const parsed  = parseFrontMatter(raw);
+
+    document.getElementById('p-title').value    = parsed.title    || '';
+    document.getElementById('p-category').value = parsed.category || category;
+    document.getElementById('p-date').value     = parsed.date     || '';
+    document.getElementById('p-excerpt').value  = parsed.excerpt  || '';
+    document.getElementById('p-body').value     = parsed.body     || '';
+    document.getElementById('p-tags').value     = parsed.tags ? parsed.tags.replace(/[\[\]"]/g,'') : '';
+
+    // store sha & path for update
+    document.getElementById('write-form').dataset.editPath = path;
+    document.getElementById('write-form').dataset.editSha  = sha;
+    document.getElementById('publish-status').textContent = '← Editing existing post';
+    document.getElementById('publish-btn').textContent = 'Save changes';
+    showAlert('write-alert','info','Editing an existing post. Publish will overwrite the file.');
+  } catch (err) {
+    document.getElementById('publish-status').textContent = '';
+    showAlert('write-alert','error','Could not load post: ' + err.message);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   DELETE POST
+═══════════════════════════════════════════ */
+async function deletePost(path, sha, title) {
+  if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+  try {
+    await ghDelete('/contents/' + path, { message: `Delete: ${title}`, sha });
+    showAlert('posts-alert','success','✓ Post deleted.');
+    loadPosts();
+  } catch (err) {
+    showAlert('posts-alert','error','Delete failed: ' + err.message);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   MARKDOWN TOOLBAR
+═══════════════════════════════════════════ */
+document.querySelectorAll('.tool-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const ta    = document.getElementById('p-body');
+    const start = ta.selectionStart;
+    const end   = ta.selectionEnd;
+    const sel   = ta.value.slice(start, end);
+
+    let replacement;
+    if (btn.dataset.wrap) {
+      const w = btn.dataset.wrap;
+      replacement = sel ? w + sel + w : w + 'text' + w;
+    } else if (btn.dataset.prefix) {
+      replacement = btn.dataset.prefix + (sel || 'text');
+    } else if (btn.dataset.block) {
+      replacement = btn.dataset.block + (sel || 'code here') + btn.dataset.blockend;
+    } else if (btn.dataset.insert) {
+      replacement = btn.dataset.insert;
+    }
+
+    ta.focus();
+    document.execCommand('insertText', false, replacement);
+  });
+});
+
+/* ═══════════════════════════════════════════
+   PREVIEW TAB
+═══════════════════════════════════════════ */
+document.getElementById('tab-write').addEventListener('click', () => {
+  document.getElementById('tab-write').classList.add('active');
+  document.getElementById('tab-preview').classList.remove('active');
+  document.getElementById('p-body').style.display = '';
+  document.getElementById('editor-toolbar').style.display = '';
+  document.getElementById('preview-pane').classList.remove('visible');
+});
+
+document.getElementById('tab-preview').addEventListener('click', () => {
+  document.getElementById('tab-preview').classList.add('active');
+  document.getElementById('tab-write').classList.remove('active');
+  document.getElementById('p-body').style.display = 'none';
+  document.getElementById('editor-toolbar').style.display = 'none';
+  const pane = document.getElementById('preview-pane');
+  pane.classList.add('visible');
+  pane.innerHTML = renderMD(document.getElementById('p-body').value || '_Nothing to preview yet._');
+});
+
+/* ═══════════════════════════════════════════
+   PROFILE SETTINGS
+═══════════════════════════════════════════ */
+function fillProfile() {
+  const p = loadProfile();
+  ['name','tagline','bio','photoUrl','email','github','linkedin'].forEach(k => {
+    const el = document.getElementById('s-' + k.toLowerCase().replace('photourl','photo'));
+    if (el) el.value = p[k] || '';
+  });
+  // map photoUrl manually
+  const photoEl = document.getElementById('s-photo');
+  if (photoEl) photoEl.value = p.photoUrl || '';
+}
+
+document.getElementById('profile-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const p  = {};
+  // map form field names to profile keys
+  const map = { name:'name', tagline:'tagline', bio:'bio', email:'email', github:'github', linkedin:'linkedin' };
+  for (const [k,v] of fd.entries()) p[map[k]||k] = v.trim();
+  p.photoUrl = document.getElementById('s-photo').value.trim();
+  saveProfile(p);
+  const saved = document.getElementById('profile-saved');
+  saved.style.display = 'inline';
+  setTimeout(() => saved.style.display = 'none', 2500);
+});
+
+/* ═══════════════════════════════════════════
+   LOCK / CHANGE PASSWORD
+═══════════════════════════════════════════ */
+function lockDashboard() {
+  location.reload();
+}
+
+async function changePassword() {
+  const curr = document.getElementById('pw-current').value;
+  const next  = document.getElementById('pw-new').value;
+  const errEl = document.getElementById('pw-error');
+  errEl.textContent = '';
+
+  if (!curr || !next) { errEl.textContent = 'Fill in both fields.'; return; }
+  if (next.length < 6) { errEl.textContent = 'New password must be at least 6 characters.'; return; }
+
+  const currHash = await sha256(curr);
+  const stored   = localStorage.getItem(LOCK_KEY);
+  if (stored && currHash !== stored) { errEl.textContent = 'Current password is incorrect.'; return; }
+
+  localStorage.setItem(LOCK_KEY, await sha256(next));
+  document.getElementById('pw-current').value = '';
+  document.getElementById('pw-new').value = '';
+  errEl.style.color = 'var(--green)';
+  errEl.textContent = '✓ Password changed.';
+  setTimeout(() => { errEl.textContent=''; errEl.style.color='var(--red)'; }, 3000);
+}
+
+/* ═══════════════════════════════════════════
+   ALERTS
+═══════════════════════════════════════════ */
+function showAlert(containerId, type, html) {
+  const icons = { success:'✓', error:'✕', info:'ℹ' };
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = `<div class="alert ${type}"><span class="alert-icon">${icons[type]||''}</span><span>${html}</span></div>`;
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  if (type === 'success') setTimeout(() => { if (el.querySelector('.alert.success')) el.innerHTML = ''; }, 6000);
+}
+
+/* ═══════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════ */
+document.querySelectorAll('.nav-btn[data-view]').forEach(btn => {
+  btn.addEventListener('click', () => switchView(btn.dataset.view));
+});
+
+updateConnectUI();
+</script>
+</body>
+</html>
