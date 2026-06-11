@@ -71,19 +71,20 @@ button{cursor:pointer;font-family:inherit}
 /* Profile photo */
 .hero-photo-wrap{
   position:relative;z-index:1;
-  width:110px;height:110px;
+  width:180px;height:180px;
   border-radius:50%;
   border:3px solid var(--card);
   box-shadow:0 0 0 1px var(--border-hi), 0 8px 32px var(--shadow);
   overflow:hidden;
   margin-bottom:1.8rem;
+  background:radial-gradient(circle at 60% 35%,#EDD9B8 0%,#D4B483 45%,#B8904A 100%);
 }
 .hero-photo-wrap img{width:100%;height:100%;object-fit:cover}
 .hero-photo-placeholder{
   width:100%;height:100%;
-  background:var(--bg-alt);
   display:flex;align-items:center;justify-content:center;
-  font-family:'Playfair Display',serif;font-size:2rem;color:var(--faint);
+  font-family:'Playfair Display',serif;font-size:3rem;color:rgba(255,255,255,0.75);
+  letter-spacing:.04em;
 }
 
 .hero-eyebrow{position:relative;z-index:1;font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--accent2);margin-bottom:1.2rem}
@@ -160,6 +161,7 @@ button{cursor:pointer;font-family:inherit}
 
 /* ── CATEGORY GRID ── */
 .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem}
+a.cat-card{display:flex}
 .cat-card{
   background:var(--card);border:1px solid var(--border);border-radius:6px;
   padding:1.6rem;
