@@ -22,7 +22,7 @@
     "period": "2022-2023",
     "institution": "First Conference Publication",
     "role": "Bachelor of Computer Science - Year 1",
-    "desc": "I was lucky enough to have the chance to work with my first supervisor in university about Membership Inference Attack. After 3 months of learning, I successfully validated my prior hypothesis about the connection between loss landscape geometry and ML models' memorization capacity and made my first publication.",
+    "desc": "I was lucky enough to have the chance to work with my first supervisor in university about Membership Inference Attack. It was only working with him, I was given the chance to delve into the concepts of learning theory, probabilistic learning, geometry of loss landscape. After 3 months of learning, I successfully validated my prior hypothesis about the connection between loss landscape geometry and ML models' memorization capacity and made my first publication.",
     "tags": "Research, MIA",
     "lang": "en"
   }
