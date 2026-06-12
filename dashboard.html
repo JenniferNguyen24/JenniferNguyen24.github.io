@@ -651,25 +651,28 @@ const saveGH  = v => localStorage.setItem(GH_KEY, JSON.stringify(v));
 
 /* save a JSON file to GitHub data/ */
 async function saveDataFile(filename, data) {
+  const { token } = loadGH();
+  if (!token) throw new Error('No GitHub token set');
   const path = `data/${filename}`;
   const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+  const headers = { 'Authorization': `token ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' };
+  const apiUrl = `https://api.github.com/repos/JenniferNguyen24/JenniferNguyen24.github.io/contents/${path}`;
   let sha;
-  try { const existing = await ghGet('/contents/' + path); sha = existing.sha; } catch {}
-  await ghPut('/contents/' + path, {
-    message: `Update ${filename}`,
-    content,
-    ...(sha ? { sha } : {}),
+  try { const ex = await fetch(apiUrl, { headers }); if (ex.ok) { sha = (await ex.json()).sha; } } catch {}
+  const r = await fetch(apiUrl, {
+    method: 'PUT', headers,
+    body: JSON.stringify({ message: `Update ${filename}`, content, ...(sha ? { sha } : {}) })
   });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.message || `GitHub ${r.status}`); }
+  return r.json();
 }
 
 /* load a JSON file from GitHub data/ */
 async function loadDataFile(filename) {
   try {
-    const gh = loadGH();
-    const b = await getDefaultBranch();
-    // no auth header on raw.githubusercontent.com — it causes CORS preflight failure
+    // use public raw URL — no auth header needed and no CORS issues
     const r = await fetch(
-      `https://raw.githubusercontent.com/${gh.owner}/${gh.repo}/${b}/data/${filename}`
+      `https://raw.githubusercontent.com/JenniferNguyen24/JenniferNguyen24.github.io/main/data/${filename}`
     );
     if (!r.ok) return null;
     return await r.json();

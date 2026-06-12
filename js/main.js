@@ -1,4 +1,8 @@
-
+/* ═══════════════════════════════════════
+   PORTFOLIO — main.js
+   ALL content fetched from GitHub.
+   Only token + language pref in localStorage.
+═══════════════════════════════════════ */
 
 /* ── GITHUB CONFIG ── */
 const GH_KEY   = 'jn_gh';
@@ -212,8 +216,14 @@ async function renderJourney(){
   // guard against corrupted/non-array data
   const all=Array.isArray(raw)?raw:[];
   if(!all||!all.length){container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${t('empty_posts')}</p>`;return;}
-  const entries=all.filter(e=>(e.lang||'en')===currentLang||(e.lang||'en')==='both'||(e.lang||'en')==='en');
-  if(!entries.length){container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${t('empty_posts')}</p>`;return;}
+  const entries=all.filter(e=>{
+    const lang=e.lang||'en';
+    return lang==='both' || lang===currentLang;
+  });
+  if(!entries.length){
+    container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${currentLang==='vi'?'Nội dung tiếng Việt sắp ra mắt.':t('empty_posts')}</p>`;
+    return;
+  }
   container.innerHTML=entries.map(e=>{
     const desc=currentLang==='vi'?(e.desc_vi||e.desc||''):(e.desc||'');
     const role=currentLang==='vi'?(e.role_vi||e.role||''):(e.role||'');
@@ -270,11 +280,14 @@ async function renderInnerPage(categoryKey){
   if(subEl) subEl.textContent=t('page_subtitle_'+categoryKey)||'';
   list.innerHTML=`<p class="empty-page" style="color:var(--faint)">${t('loading')}</p>`;
   const posts=await fetchPostsForCategory(categoryKey);
-  const langFiltered=posts.filter(p=>(p.lang||'en')===currentLang||(p.lang||'en')==='both');
-  // fallback to EN entries if no posts in current language
-  const filtered=langFiltered.length?langFiltered:posts.filter(p=>(p.lang||'en')==='en'||!p.lang);
+  const langFiltered=posts.filter(p=>{const l=p.lang||'en';return l===currentLang||l==='both';});
+  // no fallback — if no VI posts exist, show coming soon message
+  const filtered=langFiltered;
   filtered.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
-  if(!filtered.length){list.innerHTML=`<p class="empty-page">${t('empty_posts')}</p>`;return;}
+  if(!filtered.length){
+    list.innerHTML=`<p class="empty-page">${currentLang==='vi'?'Nội dung tiếng Việt sắp ra mắt.':t('empty_posts')}</p>`;
+    return;
+  }
   window.__posts=filtered;
   list.innerHTML=filtered.map((p,i)=>{
     const tags=Array.isArray(p.tags)?p.tags:(p.tags||'').split(',').map(s=>s.trim()).filter(Boolean);
@@ -346,9 +359,9 @@ async function renderRecentPosts(){
         const res=await fetch(`${RAW_BASE}/_posts/${f.category}/${f.name}`);
         if(!res.ok) return null;
         const p={...parseFrontMatter(await res.text()),category:f.category,filename:f.name};
-        // only filter out if a vi version exists; otherwise show en as fallback
-        if(currentLang==='vi'&&p.lang==='vi') return p;
-        if(currentLang==='vi'&&p.lang&&p.lang!=='en'&&p.lang!=='both') return null;
+        // only show if lang matches current language or 'both'
+        const lang=p.lang||'en';
+        if(lang!==currentLang&&lang!=='both') return null;
         return p;
       }catch{return null;}
     }));
