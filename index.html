@@ -15,15 +15,16 @@
 <nav class="nav">
   <span class="nav-logo" id="nav-logo-txt">Jennifer Nguyen</span>
   <ul class="nav-links">
-    <li><a href="#recent">Recent</a></li>
-    <li><a href="#journey">Journey</a></li>
-    <li><a href="#milestones">Milestones</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#writing">Writing</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#recent"    data-i18n="nav_recent">Recent</a></li>
+    <li><a href="#journey"   data-i18n="nav_journey">Journey</a></li>
+    <li><a href="#milestones"data-i18n="nav_milestones">Milestones</a></li>
+    <li><a href="#skills"    data-i18n="nav_skills">Skills</a></li>
+    <li><a href="#writing"   data-i18n="nav_writing">Writing</a></li>
+    <li><a href="#contact"   data-i18n="nav_contact">Contact</a></li>
   </ul>
   <div class="nav-right">
-    <button class="nav-write" id="nav-write-btn">+ Write</button>
+    <button class="lang-toggle" id="lang-toggle" aria-label="Switch language">EN</button>
+    <button class="nav-write" id="nav-write-btn" data-i18n="nav_write">+ Write</button>
   </div>
 </nav>
 
@@ -34,10 +35,10 @@
     <div class="hero-photo-placeholder" id="hero-photo-init" style="display:none">JN</div>
   </div>
 
-  <p class="hero-eyebrow">Personal Site</p>
+  <p class="hero-eyebrow" data-i18n="hero_eyebrow">Personal Site</p>
   <h1 class="hero-name" id="hero-name">Jennifer Nguyen</h1>
-  <p class="hero-tagline" id="hero-tagline">Computer Science · Mathematics · AI Research</p>
-  <p class="hero-bio" id="hero-bio">
+  <p class="hero-tagline" id="hero-tagline" data-i18n="hero_tagline">Computer Science · Mathematics · AI Research</p>
+  <p class="hero-bio" id="hero-bio" data-i18n="hero_bio">
     I study the mathematics of learning — probability, learning theory, and game theory — and explore how these ideas shape modern AI. This is where I document the journey.
   </p>
 
@@ -58,167 +59,119 @@
 
   <div class="scroll-hint" aria-hidden="true">
     <svg width="16" height="20" viewBox="0 0 16 20" fill="none"><rect x="1" y="1" width="14" height="18" rx="7" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="6" r="2" fill="currentColor"/></svg>
-    Scroll
+    <span data-i18n="scroll">Scroll</span>
   </div>
 </header>
 
 <!-- RECENT POSTS -->
 <section class="section" id="recent">
-  <p class="section-label">Latest</p>
-  <h2 class="section-title">Recent Posts</h2>
+  <p class="section-label" data-i18n="recent_label">Latest</p>
+  <h2 class="section-title" data-i18n="recent_title">Recent Posts</h2>
   <div id="recent-posts-list">
-    <p style="color:var(--faint);font-style:italic;font-size:.88rem">Loading recent posts…</p>
+    <p style="color:var(--faint);font-style:italic;font-size:.88rem" data-i18n="loading">Loading recent posts…</p>
   </div>
 </section>
 
 <!-- JOURNEY -->
 <section class="section" id="journey">
-  <p class="section-label">Chapter by chapter</p>
-  <h2 class="section-title">My Academic Journey</h2>
-  <div class="timeline" id="timeline-container">
-    <!-- populated by main.js from localStorage -->
-  </div>
+  <p class="section-label" data-i18n="journey_label">Chapter by chapter</p>
+  <h2 class="section-title" data-i18n="journey_title">My Academic Journey</h2>
+  <div class="timeline" id="timeline-container"></div>
 </section>
 
 <!-- MILESTONES -->
 <div class="section-wide" id="milestones">
   <div class="section-wide-inner">
-    <p class="section-label">Highlights</p>
-    <h2 class="section-title">Achievements &amp; Milestones</h2>
+    <p class="section-label" data-i18n="milestones_label">Highlights</p>
+    <h2 class="section-title" data-i18n="milestones_title">Achievements &amp; Milestones</h2>
     <div class="cat-grid">
-
       <a class="cat-card" data-letter="A" href="pages/achievements.html" aria-label="Go to Achievements">
         <div class="cat-icon">🏆</div>
-        <div class="cat-title">Achievements</div>
-        <div class="cat-desc">Awards, honours, and recognition earned along the way.</div>
-        <div class="cat-link">Read more →</div>
+        <div class="cat-title" data-i18n="cat_achievements">Achievements</div>
+        <div class="cat-desc" data-i18n="cat_achievements_desc">Awards, honours, and recognition earned along the way.</div>
+        <div class="cat-link" data-i18n="read_more">Read more →</div>
       </a>
-
       <a class="cat-card" data-letter="S" href="pages/scholarships.html" aria-label="Go to Scholarships">
         <div class="cat-icon">📜</div>
-        <div class="cat-title">Scholarships</div>
-        <div class="cat-desc">Funding, fellowships, and academic support received.</div>
-        <div class="cat-link">Read more →</div>
+        <div class="cat-title" data-i18n="cat_scholarships">Scholarships</div>
+        <div class="cat-desc" data-i18n="cat_scholarships_desc">Funding, fellowships, and academic support received.</div>
+        <div class="cat-link" data-i18n="read_more">Read more →</div>
       </a>
-
       <a class="cat-card" data-letter="P" href="pages/publications.html" aria-label="Go to Publications">
         <div class="cat-icon">✏️</div>
-        <div class="cat-title">Publications</div>
-        <div class="cat-desc">Papers, articles, and anything I've had the chance to publish.</div>
-        <div class="cat-link">Read more →</div>
+        <div class="cat-title" data-i18n="cat_publications">Publications</div>
+        <div class="cat-desc" data-i18n="cat_publications_desc">Papers, articles, and anything I've had the chance to publish.</div>
+        <div class="cat-link" data-i18n="read_more">Read more →</div>
       </a>
-
     </div>
   </div>
 </div>
 
 <!-- SKILLS -->
 <section class="section" id="skills">
-  <p class="section-label">What I bring</p>
-  <h2 class="section-title">Skills &amp; Competencies</h2>
+  <p class="section-label" data-i18n="skills_label">What I bring</p>
+  <h2 class="section-title" data-i18n="skills_title">Skills &amp; Competencies</h2>
   <div class="skills-grid">
-
     <div class="skill-group">
-      <h3>Mathematics</h3>
-      <div class="skill-item">
-        <span class="skill-label">Probability Theory <span class="skill-pct">90%</span></span>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:90%"></div></div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-label">Learning Theory <span class="skill-pct">85%</span></span>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-label">Game Theory <span class="skill-pct">80%</span></span>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div>
-      </div>
+      <h3 data-i18n="skill_math">Mathematics</h3>
+      <div class="skill-item"><span class="skill-label">Probability Theory <span class="skill-pct">90%</span></span><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:90%"></div></div></div>
+      <div class="skill-item"><span class="skill-label">Learning Theory <span class="skill-pct">85%</span></span><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div></div>
+      <div class="skill-item"><span class="skill-label">Game Theory <span class="skill-pct">80%</span></span><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div></div>
     </div>
-
     <div class="skill-group">
-      <h3>Computer Science</h3>
-      <div class="skill-item">
-        <span class="skill-label">Algorithms &amp; Complexity <span class="skill-pct">85%</span></span>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-label">Machine Learning <span class="skill-pct">80%</span></span>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-label">Python / Research Code <span class="skill-pct">75%</span></span>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:75%"></div></div>
-      </div>
+      <h3 data-i18n="skill_cs">Computer Science</h3>
+      <div class="skill-item"><span class="skill-label">Algorithms &amp; Complexity <span class="skill-pct">85%</span></span><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div></div>
+      <div class="skill-item"><span class="skill-label">Machine Learning <span class="skill-pct">80%</span></span><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div></div>
+      <div class="skill-item"><span class="skill-label">Python / Research Code <span class="skill-pct">75%</span></span><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:75%"></div></div></div>
     </div>
-
     <div class="skill-group">
-      <h3>Languages</h3>
-      <div class="skill-item">
-        <span class="skill-label">Vietnamese (Native) <span class="skill-pct">100%</span></span>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:100%"></div></div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-label">English <span class="skill-pct">85%</span></span>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div>
-      </div>
+      <h3 data-i18n="skill_lang">Languages</h3>
+      <div class="skill-item"><span class="skill-label" data-i18n="skill_vi">Vietnamese (Native) <span class="skill-pct">100%</span></span><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:100%"></div></div></div>
+      <div class="skill-item"><span class="skill-label" data-i18n="skill_en">English <span class="skill-pct">85%</span></span><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div></div>
     </div>
-
     <div class="skill-group">
-      <h3>Research</h3>
-      <div class="skill-item">
-        <span class="skill-label">Mathematical Writing <span class="skill-pct">82%</span></span>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:82%"></div></div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-label">Literature Review <span class="skill-pct">78%</span></span>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:78%"></div></div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-label">Critical Analysis <span class="skill-pct">88%</span></span>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:88%"></div></div>
-      </div>
+      <h3 data-i18n="skill_research">Research</h3>
+      <div class="skill-item"><span class="skill-label" data-i18n="skill_writing">Mathematical Writing <span class="skill-pct">82%</span></span><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:82%"></div></div></div>
+      <div class="skill-item"><span class="skill-label" data-i18n="skill_review">Literature Review <span class="skill-pct">78%</span></span><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:78%"></div></div></div>
+      <div class="skill-item"><span class="skill-label" data-i18n="skill_analysis">Critical Analysis <span class="skill-pct">88%</span></span><div class="skill-bar-bg"><div class="skill-bar-fill" style="width:88%"></div></div></div>
     </div>
-
   </div>
 </section>
 
-<!-- WRITING / CATEGORIES -->
+<!-- WRITING -->
 <div class="section-wide" id="writing">
   <div class="section-wide-inner">
-    <p class="section-label">Explore</p>
-    <h2 class="section-title">Writing &amp; Work</h2>
+    <p class="section-label" data-i18n="writing_label">Explore</p>
+    <h2 class="section-title" data-i18n="writing_title">Writing &amp; Work</h2>
     <div class="cat-grid">
-
       <a class="cat-card" data-letter="S" href="pages/stories.html" aria-label="Go to Personal Stories">
         <div class="cat-icon">✦</div>
-        <div class="cat-title">Personal Stories</div>
-        <div class="cat-desc">Reflections, experiences, and the moments that shaped who I am.</div>
-        <div class="cat-link">Read more →</div>
+        <div class="cat-title" data-i18n="cat_stories">Personal Stories</div>
+        <div class="cat-desc" data-i18n="cat_stories_desc">Reflections, experiences, and the moments that shaped who I am.</div>
+        <div class="cat-link" data-i18n="read_more">Read more →</div>
       </a>
-
       <a class="cat-card" data-letter="M" href="pages/math.html" aria-label="Go to Pure Math">
         <div class="cat-icon">∑</div>
-        <div class="cat-title">Pure Math</div>
-        <div class="cat-desc">Notes, proofs, and musings on probability, learning theory, and game theory.</div>
-        <div class="cat-link">Read more →</div>
+        <div class="cat-title" data-i18n="cat_math">Pure Math</div>
+        <div class="cat-desc" data-i18n="cat_math_desc">Notes, proofs, and musings on probability, learning theory, and game theory.</div>
+        <div class="cat-link" data-i18n="read_more">Read more →</div>
       </a>
-
       <a class="cat-card" data-letter="R" href="pages/research.html" aria-label="Go to AI Research">
         <div class="cat-icon">◈</div>
-        <div class="cat-title">AI Research</div>
-        <div class="cat-desc">Papers, ideas, and explorations at the intersection of mathematics and AI.</div>
-        <div class="cat-link">Read more →</div>
+        <div class="cat-title" data-i18n="cat_research">AI Research</div>
+        <div class="cat-desc" data-i18n="cat_research_desc">Papers, ideas, and explorations at the intersection of mathematics and AI.</div>
+        <div class="cat-link" data-i18n="read_more">Read more →</div>
       </a>
-
     </div>
   </div>
 </div>
 
 <!-- CONTACT -->
 <section class="section" id="contact">
-  <p class="section-label">Get in touch</p>
-  <h2 class="section-title">Let's Connect</h2>
+  <p class="section-label" data-i18n="contact_label">Get in touch</p>
+  <h2 class="section-title" data-i18n="contact_title">Let's Connect</h2>
   <div class="contact-grid">
-    <p class="contact-intro">
+    <p class="contact-intro" data-i18n="contact_intro">
       I'm always happy to connect with fellow students, researchers, or anyone curious about mathematics and AI. Whether you have a question about a project or just want to say hello — feel free to reach out.
     </p>
     <div class="contact-links" id="contact-links">
@@ -252,143 +205,6 @@
     <div class="modal-meta" id="modal-meta"></div>
     <div class="modal-body" id="modal-body"></div>
     <div class="modal-footer-tags" id="modal-tags"></div>
-  </div>
-</div>
-
-<!-- DASHBOARD -->
-<div class="dash-overlay" id="dash-overlay" role="dialog" aria-modal="true">
-  <div class="dash-nav">
-    <span class="dash-nav-title">Dashboard</span>
-    <div class="dash-tabs">
-      <button class="dash-tab active" data-tab="write">Write</button>
-      <button class="dash-tab" data-tab="manage">Posts</button>
-      <button class="dash-tab" data-tab="edit" id="edit-tab" style="display:none">Editing</button>
-      <button class="dash-tab" data-tab="profile">Profile</button>
-    </div>
-    <button class="dash-close-btn" id="dash-close-btn">✕ Close</button>
-  </div>
-  <div class="dash-body">
-
-    <!-- WRITE -->
-    <div class="dash-view active" data-view="write">
-      <h2 class="form-title">New post</h2>
-      <form id="write-form" novalidate>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label" for="w-category">Section</label>
-            <select class="form-select cat-select" name="category" id="w-category"></select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="w-date">Date</label>
-            <input class="form-input" type="date" name="date" id="w-date"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="w-title">Title</label>
-          <input class="form-input" type="text" name="title" id="w-title" placeholder="e.g. On the Sample Complexity of PAC Learning" required/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="w-excerpt">One-line summary <span style="opacity:.5;text-transform:none;letter-spacing:0">(optional)</span></label>
-          <input class="form-input" type="text" name="excerpt" id="w-excerpt" placeholder="Shown as a preview in the list"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="w-body">Content</label>
-          <textarea class="form-textarea" name="body" id="w-body" rows="14" placeholder="Write freely. Blank lines separate paragraphs." required></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="w-tags">Tags</label>
-          <input class="form-input" type="text" name="tags" id="w-tags" placeholder="probability, PAC-learning, game-theory"/>
-          <p class="form-hint">Comma-separated.</p>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Publish</button>
-          <button type="reset" class="btn-ghost">Clear</button>
-        </div>
-      </form>
-    </div>
-
-    <!-- MANAGE -->
-    <div class="dash-view" data-view="manage">
-      <h2 class="form-title">Your posts</h2>
-      <div class="manage-list" id="manage-list"></div>
-    </div>
-
-    <!-- EDIT -->
-    <div class="dash-view" data-view="edit">
-      <h2 class="form-title">Edit post</h2>
-      <form id="edit-form" novalidate>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label" for="e-category">Section</label>
-            <select class="form-select cat-select" name="category" id="e-category"></select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="e-date">Date</label>
-            <input class="form-input" type="date" name="date" id="e-date"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="e-title">Title</label>
-          <input class="form-input" type="text" name="title" id="e-title" required/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="e-excerpt">One-line summary</label>
-          <input class="form-input" type="text" name="excerpt" id="e-excerpt"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="e-body">Content</label>
-          <textarea class="form-textarea" name="body" id="e-body" rows="14" required></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="e-tags">Tags</label>
-          <input class="form-input" type="text" name="tags" id="e-tags"/>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Save changes</button>
-          <button type="button" class="btn-ghost" onclick="switchDash('manage')">Cancel</button>
-        </div>
-      </form>
-    </div>
-
-    <!-- PROFILE -->
-    <div class="dash-view" data-view="profile">
-      <h2 class="form-title">Profile</h2>
-      <form id="profile-form" novalidate>
-        <div class="form-group">
-          <label class="form-label" for="p-name">Name</label>
-          <input class="form-input" type="text" name="name" id="p-name" placeholder="Jennifer Nguyen"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="p-tagline">Tagline</label>
-          <input class="form-input" type="text" name="tagline" id="p-tagline" placeholder="Computer Science · Mathematics · AI Research"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="p-bio">Bio</label>
-          <textarea class="form-textarea" name="bio" id="p-bio" rows="3" placeholder="Short intro shown on the homepage."></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="p-photo">Profile photo URL</label>
-          <input class="form-input" type="url" name="photoUrl" id="p-photo" placeholder="https://example.com/photo.jpg"/>
-          <p class="form-hint">Link to an image hosted online (GitHub, Imgur, etc.). Upload a photo to GitHub and paste its raw URL.</p>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="p-email">Email</label>
-          <input class="form-input" type="email" name="email" id="p-email" placeholder="you@example.com"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="p-github">GitHub username</label>
-          <input class="form-input" type="text" name="github" id="p-github" placeholder="yourusername"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="p-linkedin">LinkedIn username</label>
-          <input class="form-input" type="text" name="linkedin" id="p-linkedin" placeholder="yourusername"/>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Save profile</button>
-        </div>
-      </form>
-    </div>
-
   </div>
 </div>
 

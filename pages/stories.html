@@ -11,8 +11,11 @@
 <body>
 <nav class="nav">
   <span class="nav-logo" id="nav-logo-txt">Jennifer Nguyen</span>
-  <ul class="nav-links"><li><a href="../index.html">&larr; Home</a></li></ul>
-  <div class="nav-right"><button class="nav-write" id="nav-write-btn">+ Write</button></div>
+  <ul class="nav-links"><li><a href="../index.html" data-i18n="nav_back">&larr; Home</a></li></ul>
+  <div class="nav-right">
+    <button class="lang-toggle" id="lang-toggle">EN</button>
+    <button class="nav-write" id="nav-write-btn" data-i18n="nav_write">+ Write</button>
+  </div>
 </nav>
 <div class="page-header">
   <p class="page-header-label" id="page-label">Personal Stories</p>
@@ -32,62 +35,6 @@
     <div class="modal-meta" id="modal-meta"></div>
     <div class="modal-body" id="modal-body"></div>
     <div class="modal-footer-tags" id="modal-tags"></div>
-  </div>
-</div>
-<div class="dash-overlay" id="dash-overlay" role="dialog" aria-modal="true">
-  <div class="dash-nav">
-    <span class="dash-nav-title">Dashboard</span>
-    <div class="dash-tabs">
-      <button class="dash-tab active" data-tab="write">Write</button>
-      <button class="dash-tab" data-tab="manage">Posts</button>
-      <button class="dash-tab" data-tab="edit" style="display:none">Editing</button>
-      <button class="dash-tab" data-tab="profile">Profile</button>
-    </div>
-    <button class="dash-close-btn" id="dash-close-btn">&times; Close</button>
-  </div>
-  <div class="dash-body">
-    <div class="dash-view active" data-view="write">
-      <h2 class="form-title">New post</h2>
-      <form id="write-form" novalidate>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Section</label><select class="form-select cat-select" name="category" id="w-category"></select></div>
-          <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" name="date" id="w-date"/></div>
-        </div>
-        <div class="form-group"><label class="form-label">Title</label><input class="form-input" type="text" name="title" required/></div>
-        <div class="form-group"><label class="form-label">Summary <span style="opacity:.5;text-transform:none;letter-spacing:0">(optional)</span></label><input class="form-input" type="text" name="excerpt"/></div>
-        <div class="form-group"><label class="form-label">Content</label><textarea class="form-textarea" name="body" rows="12" required></textarea></div>
-        <div class="form-group"><label class="form-label">Tags</label><input class="form-input" type="text" name="tags" placeholder="comma-separated"/></div>
-        <div class="form-actions"><button type="submit" class="btn-primary">Publish</button><button type="reset" class="btn-ghost">Clear</button></div>
-      </form>
-    </div>
-    <div class="dash-view" data-view="manage"><h2 class="form-title">Your posts</h2><div class="manage-list" id="manage-list"></div></div>
-    <div class="dash-view" data-view="edit">
-      <h2 class="form-title">Edit post</h2>
-      <form id="edit-form" novalidate>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Section</label><select class="form-select cat-select" name="category" id="e-category"></select></div>
-          <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" name="date" id="e-date"/></div>
-        </div>
-        <div class="form-group"><label class="form-label">Title</label><input class="form-input" type="text" name="title" required/></div>
-        <div class="form-group"><label class="form-label">Summary</label><input class="form-input" type="text" name="excerpt"/></div>
-        <div class="form-group"><label class="form-label">Content</label><textarea class="form-textarea" name="body" rows="12" required></textarea></div>
-        <div class="form-group"><label class="form-label">Tags</label><input class="form-input" type="text" name="tags"/></div>
-        <div class="form-actions"><button type="submit" class="btn-primary">Save changes</button><button type="button" class="btn-ghost" onclick="switchDash('manage')">Cancel</button></div>
-      </form>
-    </div>
-    <div class="dash-view" data-view="profile">
-      <h2 class="form-title">Profile</h2>
-      <form id="profile-form" novalidate>
-        <div class="form-group"><label class="form-label">Name</label><input class="form-input" type="text" name="name" id="p-name"/></div>
-        <div class="form-group"><label class="form-label">Tagline</label><input class="form-input" type="text" name="tagline" id="p-tagline"/></div>
-        <div class="form-group"><label class="form-label">Bio</label><textarea class="form-textarea" name="bio" id="p-bio" rows="3"></textarea></div>
-        <div class="form-group"><label class="form-label">Photo URL</label><input class="form-input" type="url" name="photoUrl" id="p-photo"/></div>
-        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" name="email" id="p-email"/></div>
-        <div class="form-group"><label class="form-label">GitHub username</label><input class="form-input" type="text" name="github" id="p-github"/></div>
-        <div class="form-group"><label class="form-label">LinkedIn username</label><input class="form-input" type="text" name="linkedin" id="p-linkedin"/></div>
-        <div class="form-actions"><button type="submit" class="btn-primary">Save profile</button></div>
-      </form>
-    </div>
   </div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

@@ -323,6 +323,16 @@
             </select>
           </div>
           <div class="form-group">
+            <label class="form-label" for="p-lang">Language</label>
+            <select class="form-select" name="lang" id="p-lang">
+              <option value="en">🇬🇧 English</option>
+              <option value="vi">🇻🇳 Tiếng Việt</option>
+              <option value="both">Both / Cả hai</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
             <label class="form-label" for="p-date">Date</label>
             <input class="form-input" type="date" name="date" id="p-date"/>
           </div>
@@ -400,9 +410,17 @@ For math: use $inline$ or $$block$$ (LaTeX)."></textarea>
               <input class="form-input" type="text" name="period" placeholder="e.g. 2022 – 2023 · Year 1" required/>
             </div>
             <div class="form-group">
-              <label class="form-label">Tags</label>
-              <input class="form-input" type="text" name="tags" placeholder="GPA: X.X, Research, Python"/>
+              <label class="form-label">Language</label>
+              <select class="form-select" name="lang">
+                <option value="en">🇬🇧 English</option>
+                <option value="vi">🇻🇳 Tiếng Việt</option>
+                <option value="both">Both / Cả hai</option>
+              </select>
             </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tags</label>
+            <input class="form-input" type="text" name="tags" placeholder="GPA: X.X, Research, Python"/>
           </div>
           <div class="form-group">
             <label class="form-label">Institution / Event *</label>
@@ -625,13 +643,38 @@ checkLock();
 /* ═══════════════════════════════════════════
    STORAGE
 ═══════════════════════════════════════════ */
-const GH_KEY      = 'jn_gh';
-const PROFILE_KEY = 'jn_profile';
+const GH_KEY = 'jn_gh';
+const LOCK_KEY_ONLY = 'jn_dashboard_pw'; /* only localStorage key left for content */
 
-const loadGH      = () => { try { return JSON.parse(localStorage.getItem(GH_KEY)) || {}; } catch { return {}; } };
-const saveGH      = v => localStorage.setItem(GH_KEY, JSON.stringify(v));
-const loadProfile = () => { try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {}; } catch { return {}; } };
-const saveProfile = v => localStorage.setItem(PROFILE_KEY, JSON.stringify(v));
+const loadGH  = () => { try { return JSON.parse(localStorage.getItem(GH_KEY)) || {}; } catch { return {}; } };
+const saveGH  = v => localStorage.setItem(GH_KEY, JSON.stringify(v));
+
+/* save a JSON file to GitHub _data/ */
+async function saveDataFile(filename, data) {
+  const path = `_data/${filename}`;
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+  let sha;
+  try { const existing = await ghGet('/contents/' + path); sha = existing.sha; } catch {}
+  await ghPut('/contents/' + path, {
+    message: `Update ${filename}`,
+    content,
+    ...(sha ? { sha } : {}),
+  });
+}
+
+/* load a JSON file from GitHub _data/ */
+async function loadDataFile(filename) {
+  try {
+    const gh = loadGH();
+    const b = await getDefaultBranch();
+    const r = await fetch(
+      `https://raw.githubusercontent.com/${gh.owner}/${gh.repo}/${b}/_data/${filename}`,
+      gh.token ? { headers: { 'Authorization': `token ${gh.token}` } } : {}
+    );
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
+}
 
 /* ═══════════════════════════════════════════
    GITHUB API
@@ -678,13 +721,14 @@ function postPath(category, title, date) {
 /* ═══════════════════════════════════════════
    MARKDOWN FRONT-MATTER
 ═══════════════════════════════════════════ */
-function buildMarkdown({ title, excerpt, body, tags, category, date }) {
+function buildMarkdown({ title, excerpt, body, tags, category, date, lang }) {
   const tagList = tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [];
   const fm = [
     '---',
     `title: "${title.replace(/"/g, '\\"')}"`,
     `date: ${date}`,
     `category: ${category}`,
+    `lang: ${lang||'en'}`,
     excerpt ? `excerpt: "${excerpt.replace(/"/g, '\\"')}"` : null,
     tagList.length ? `tags: [${tagList.map(t=>`"${t}"`).join(', ')}]` : null,
     '---',
@@ -747,7 +791,7 @@ function switchView(name) {
   if (name === 'posts') loadPosts();
   if (name === 'connect') updateConnectUI();
   if (name === 'settings') fillProfile();
-  if (name === 'journey') renderJourneyEntries();
+  if (name === 'journey') { _journeyCache = null; renderJourneyEntries(); }
 }
 
 /* ═══════════════════════════════════════════
@@ -813,6 +857,7 @@ document.getElementById('write-form').addEventListener('submit', async e => {
 
   const title    = document.getElementById('p-title').value.trim();
   const category = document.getElementById('p-category').value;
+  const lang     = document.getElementById('p-lang').value || 'en';
   const date     = document.getElementById('p-date').value || new Date().toISOString().slice(0,10);
   const excerpt  = document.getElementById('p-excerpt').value.trim();
   const body     = document.getElementById('p-body').value.trim();
@@ -827,7 +872,7 @@ document.getElementById('write-form').addEventListener('submit', async e => {
   document.getElementById('publish-status').textContent = '';
 
   try {
-    const content = buildMarkdown({ title, excerpt, body, tags, category, date });
+    const content = buildMarkdown({ title, excerpt, body, tags, category, date, lang });
     const path    = postPath(category, title, date);
     const encoded = btoa(unescape(encodeURIComponent(content)));
 
@@ -1015,50 +1060,61 @@ document.getElementById('tab-preview').addEventListener('click', () => {
 /* ═══════════════════════════════════════════
    PROFILE SETTINGS
 ═══════════════════════════════════════════ */
-function fillProfile() {
-  const p = loadProfile();
-  ['name','tagline','bio','photoUrl','email','github','linkedin'].forEach(k => {
-    const el = document.getElementById('s-' + k.toLowerCase().replace('photourl','photo'));
+async function fillProfile() {
+  const p = await loadDataFile('profile.json') || {};
+  ['name','tagline','bio','email','github','linkedin'].forEach(k => {
+    const el = document.getElementById('s-' + k);
     if (el) el.value = p[k] || '';
   });
-  // map photoUrl manually
   const photoEl = document.getElementById('s-photo');
   if (photoEl) photoEl.value = p.photoUrl || '';
 }
 
-document.getElementById('profile-form').addEventListener('submit', e => {
+document.getElementById('profile-form').addEventListener('submit', async e => {
   e.preventDefault();
+  const gh = loadGH();
+  if (!gh.token) { alert('Connect GitHub first.'); return; }
   const fd = new FormData(e.target);
   const p  = {};
-  // map form field names to profile keys
   const map = { name:'name', tagline:'tagline', bio:'bio', email:'email', github:'github', linkedin:'linkedin' };
   for (const [k,v] of fd.entries()) p[map[k]||k] = v.trim();
   p.photoUrl = document.getElementById('s-photo').value.trim();
-  saveProfile(p);
-  const saved = document.getElementById('profile-saved');
-  saved.style.display = 'inline';
-  setTimeout(() => saved.style.display = 'none', 2500);
+  const btn = e.target.querySelector('[type="submit"]');
+  btn.textContent = 'Saving…'; btn.disabled = true;
+  try {
+    await saveDataFile('profile.json', p);
+    const saved = document.getElementById('profile-saved');
+    saved.style.display = 'inline';
+    setTimeout(() => saved.style.display = 'none', 2500);
+  } catch(err) { alert('Failed to save profile: ' + err.message); }
+  finally { btn.textContent = 'Save profile'; btn.disabled = false; }
 });
 
 /* ═══════════════════════════════════════════
-   JOURNEY MANAGEMENT
+   JOURNEY MANAGEMENT (GitHub-backed)
 ═══════════════════════════════════════════ */
-const JOURNEY_KEY = 'jn_journey';
-const DEFAULT_JOURNEY = [
-  { id:'j1', period:'2019 – 2022', institution:'Your High School Name', role:'High School Student · Science Track', desc:'Describe your high school experience — the subjects you loved, the teachers who shaped you, and the early spark that pointed you toward mathematics and CS.', tags:'Mathematics, Physics, CS' },
-  { id:'j2', period:'2022', institution:'National High School Graduation Exam', role:'THPT National Examination', desc:'Write about your exam results and how this moment opened the door to university.', tags:'Score: XX.XX, Top XX%' },
-  { id:'j3', period:'2022 – 2023 · Year 1', institution:'Your University', role:'Bachelor of Computer Science · First Year', desc:'Freshman year — foundations in algorithms, discrete math, and the first taste of probability theory that would define my direction.', tags:'GPA: X.X, Algorithms, Probability' },
-  { id:'j4', period:'2023 – 2024 · Year 2', institution:'Your University', role:'Bachelor of Computer Science · Second Year', desc:'Deeper into learning theory and game theory. First research involvement and the beginning of serious mathematical work.', tags:'Learning Theory, Game Theory, Research' },
-];
+let _journeyCache = null;
 
-function loadJourney() { try { return JSON.parse(localStorage.getItem(JOURNEY_KEY)) || DEFAULT_JOURNEY; } catch { return DEFAULT_JOURNEY; } }
-function saveJourney(j) { localStorage.setItem(JOURNEY_KEY, JSON.stringify(j)); }
+async function loadJourney() {
+  if (_journeyCache) return _journeyCache;
+  const data = await loadDataFile('journey.json');
+  _journeyCache = data || [];
+  return _journeyCache;
+}
+
+async function saveJourney(j) {
+  const gh = loadGH();
+  if (!gh.token) { alert('Connect GitHub first.'); return; }
+  _journeyCache = j;
+  await saveDataFile('journey.json', j);
+}
 function journeyId() { return 'j' + Date.now().toString(36); }
 
-function renderJourneyEntries() {
+async function renderJourneyEntries() {
   const list = document.getElementById('journey-entries-list');
   if (!list) return;
-  const entries = loadJourney();
+  list.innerHTML = '<p style="color:var(--faint);font-size:.82rem;padding:.5rem 0">Loading…</p>';
+  const entries = await loadJourney();
   if (!entries.length) { list.innerHTML = '<p style="color:var(--faint);font-style:italic;font-size:.85rem;padding:1rem 0">No entries yet. Click "+ Add entry" to start.</p>'; return; }
   list.innerHTML = entries.map((e, i) => `
     <div class="manage-row" data-jid="${e.id}">
@@ -1078,20 +1134,21 @@ function renderJourneyEntries() {
     </div>`).join('');
 
   list.querySelectorAll('[data-up]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const j = loadJourney(); const i = j.findIndex(e => e.id === btn.dataset.up);
-      if (i > 0) { [j[i-1], j[i]] = [j[i], j[i-1]]; saveJourney(j); renderJourneyEntries(); }
+    btn.addEventListener('click', async () => {
+      const j = await loadJourney(); const i = j.findIndex(e => e.id === btn.dataset.up);
+      if (i > 0) { [j[i-1], j[i]] = [j[i], j[i-1]]; await saveJourney(j); renderJourneyEntries(); }
     });
   });
   list.querySelectorAll('[data-down]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const j = loadJourney(); const i = j.findIndex(e => e.id === btn.dataset.down);
-      if (i < j.length-1) { [j[i], j[i+1]] = [j[i+1], j[i]]; saveJourney(j); renderJourneyEntries(); }
+    btn.addEventListener('click', async () => {
+      const j = await loadJourney(); const i = j.findIndex(e => e.id === btn.dataset.down);
+      if (i < j.length-1) { [j[i], j[i+1]] = [j[i+1], j[i]]; await saveJourney(j); renderJourneyEntries(); }
     });
   });
   list.querySelectorAll('[data-jedit]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const e = loadJourney().find(x => x.id === btn.dataset.jedit); if (!e) return;
+    btn.addEventListener('click', async () => {
+      const j = await loadJourney();
+      const e = j.find(x => x.id === btn.dataset.jedit); if (!e) return;
       const form = document.getElementById('entry-form');
       form.dataset.editId = e.id;
       form.querySelector('[name="period"]').value = e.period || '';
@@ -1106,9 +1163,11 @@ function renderJourneyEntries() {
     });
   });
   list.querySelectorAll('[data-jdel]').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       if (!confirm('Delete this entry?')) return;
-      saveJourney(loadJourney().filter(e => e.id !== btn.dataset.jdel));
+      const j = await loadJourney();
+      await saveJourney(j.filter(e => e.id !== btn.dataset.jdel));
+      _journeyCache = null;
       renderJourneyEntries();
       showJourneyAlert('success', 'Entry deleted.');
     });
@@ -1139,26 +1198,36 @@ document.getElementById('entry-cancel-btn')?.addEventListener('click', () => {
   document.getElementById('entry-form').reset();
 });
 
-document.getElementById('entry-form')?.addEventListener('submit', e => {
+document.getElementById('entry-form')?.addEventListener('submit', async e => {
   e.preventDefault();
   const fd = new FormData(e.target);
   const period = fd.get('period')?.trim();
   const institution = fd.get('institution')?.trim();
   if (!period || !institution) { showJourneyAlert('error', 'Period and Institution are required.'); return; }
 
-  const j = loadJourney();
-  const editId = e.target.dataset.editId;
-  if (editId) {
-    const i = j.findIndex(x => x.id === editId);
-    if (i !== -1) j[i] = { ...j[i], period, institution, role: fd.get('role')?.trim()||'', desc: fd.get('desc')?.trim()||'', tags: fd.get('tags')?.trim()||'' };
-  } else {
-    j.push({ id: journeyId(), period, institution, role: fd.get('role')?.trim()||'', desc: fd.get('desc')?.trim()||'', tags: fd.get('tags')?.trim()||'' });
+  const btn = document.getElementById('entry-submit-btn');
+  btn.textContent = 'Saving…'; btn.disabled = true;
+
+  try {
+    const j = await loadJourney();
+    const editId = e.target.dataset.editId;
+    if (editId) {
+      const i = j.findIndex(x => x.id === editId);
+      if (i !== -1) j[i] = { ...j[i], period, institution, role: fd.get('role')?.trim()||'', desc: fd.get('desc')?.trim()||'', tags: fd.get('tags')?.trim()||'', lang: fd.get('lang')||'en' };
+    } else {
+      j.push({ id: journeyId(), period, institution, role: fd.get('role')?.trim()||'', desc: fd.get('desc')?.trim()||'', tags: fd.get('tags')?.trim()||'', lang: fd.get('lang')||'en' });
+    }
+    await saveJourney(j);
+    _journeyCache = null;
+    renderJourneyEntries();
+    document.getElementById('entry-form-wrap').style.display = 'none';
+    e.target.reset();
+    showJourneyAlert('success', editId ? '✓ Entry updated.' : '✓ Entry added.');
+  } catch(err) {
+    showJourneyAlert('error', 'Failed to save: ' + err.message);
+  } finally {
+    btn.textContent = 'Save entry'; btn.disabled = false;
   }
-  saveJourney(j);
-  renderJourneyEntries();
-  document.getElementById('entry-form-wrap').style.display = 'none';
-  e.target.reset();
-  showJourneyAlert('success', editId ? '✓ Entry updated.' : '✓ Entry added.');
 });
 
 /* ═══════════════════════════════════════════
