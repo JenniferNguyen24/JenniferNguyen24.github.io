@@ -649,9 +649,9 @@ const LOCK_KEY_ONLY = 'jn_dashboard_pw'; /* only localStorage key left for conte
 const loadGH  = () => { try { return JSON.parse(localStorage.getItem(GH_KEY)) || {}; } catch { return {}; } };
 const saveGH  = v => localStorage.setItem(GH_KEY, JSON.stringify(v));
 
-/* save a JSON file to GitHub _data/ */
+/* save a JSON file to GitHub data/ */
 async function saveDataFile(filename, data) {
-  const path = `_data/${filename}`;
+  const path = `data/${filename}`;
   const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
   let sha;
   try { const existing = await ghGet('/contents/' + path); sha = existing.sha; } catch {}
@@ -662,13 +662,13 @@ async function saveDataFile(filename, data) {
   });
 }
 
-/* load a JSON file from GitHub _data/ */
+/* load a JSON file from GitHub data/ */
 async function loadDataFile(filename) {
   try {
     const gh = loadGH();
     const b = await getDefaultBranch();
     const r = await fetch(
-      `https://raw.githubusercontent.com/${gh.owner}/${gh.repo}/${b}/_data/${filename}`,
+      `https://raw.githubusercontent.com/${gh.owner}/${gh.repo}/${b}/data/${filename}`,
       gh.token ? { headers: { 'Authorization': `token ${gh.token}` } } : {}
     );
     if (!r.ok) return null;

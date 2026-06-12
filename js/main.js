@@ -50,7 +50,7 @@ async function fetchData(filename){
   const gh=loadGH(); if(!gh.owner||!gh.repo) return null;
   try{
     const b=await branch();
-    const r=await fetch(`https://raw.githubusercontent.com/${gh.owner}/${gh.repo}/${b}/_data/${filename}`,
+    const r=await fetch(`https://raw.githubusercontent.com/${gh.owner}/${gh.repo}/${b}/data/${filename}`,
       gh.token?{headers:{'Authorization':`token ${gh.token}`}}:{});
     if(!r.ok) return null;
     return await r.json();
