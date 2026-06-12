@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════
+* ═══════════════════════════════════════
    PORTFOLIO — main.js
    ALL content fetched from GitHub.
    Only token + language pref in localStorage.
@@ -171,6 +171,7 @@ function toggleLang(){
   currentLang=currentLang==='en'?'vi':'en';
   localStorage.setItem(LANG_KEY,currentLang);
   applyTranslations();
+  renderProfileText(); // instant — uses cached profile
   renderJourney();
   renderSkills();
   renderRecentPosts();
@@ -178,31 +179,42 @@ function toggleLang(){
 }
 
 /* ── PROFILE (from GitHub _data/profile.json) ── */
-async function renderProfile(){
-  const p=await fetchData('profile.json');
-  if(!p){ setText('hero-name','Jennifer Nguyen'); return; }
+let _profileCache = null;
 
+function renderProfileText(){
+  const p = _profileCache; if(!p) return;
   const name=p.name||'Jennifer Nguyen';
   setText('hero-name',name);
   const tagEl=document.getElementById('hero-tagline');
-  if(tagEl) tagEl.textContent=currentLang==='vi'?(p.tagline_vi||p.tagline||''):( p.tagline||'');
+  // fall back to English text, never to empty string or key name
+  if(tagEl) tagEl.textContent=currentLang==='vi'?(p.tagline_vi||p.tagline||'Computer Science · Mathematics · AI Research'):(p.tagline||'Computer Science · Mathematics · AI Research');
   const bioEl=document.getElementById('hero-bio');
   if(bioEl) bioEl.textContent=currentLang==='vi'?(p.bio_vi||p.bio||''):(p.bio||'');
   setText('footer-name',name);
   const navLogo=document.getElementById('nav-logo-txt'); if(navLogo) navLogo.textContent=name;
+}
+
+async function renderProfile(){
+  const p=await fetchData('profile.json');
+  if(!p){ setText('hero-name','Jennifer Nguyen'); return; }
+  _profileCache=p;
+
+  renderProfileText();
 
   // photo
   const photoImg=document.getElementById('hero-photo-img');
   const photoInit=document.getElementById('hero-photo-init');
   if(p.photoUrl&&photoImg){photoImg.src=p.photoUrl;photoImg.style.display='block';if(photoInit)photoInit.style.display='none';}
-  else if(photoInit){photoInit.textContent=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+  else if(photoInit){photoInit.textContent=(p.name||'JN').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
 }
 
 /* ── JOURNEY (from GitHub _data/journey.json) ── */
 async function renderJourney(){
   const container=document.getElementById('timeline-container'); if(!container) return;
   container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${t('loading')}</p>`;
-  const all=await fetchData('journey.json');
+  const raw=await fetchData('journey.json');
+  // guard against corrupted/non-array data
+  const all=Array.isArray(raw)?raw:[];
   if(!all||!all.length){container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${t('empty_posts')}</p>`;return;}
   const entries=all.filter(e=>(e.lang||'en')===currentLang||(e.lang||'en')==='both'||(e.lang||'en')==='en');
   if(!entries.length){container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${t('empty_posts')}</p>`;return;}
