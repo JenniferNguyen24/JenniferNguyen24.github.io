@@ -353,18 +353,13 @@ function renderBodyMD(md){
     .replace(/\n\n+/g,'</p><p>');
 
   // Step 3: restore LaTeX placeholders as rendered KaTeX
-  html = html.replace(/%%MATH_DISPLAY_(\d+)%%/g, (_, i) => {
-    const { math } = mathBlocks[i];
-    try {
-      return window.katex ? katex.renderToString(math, { displayMode: true, throwOnError: false }) : `$$${math}$$`;
-    } catch { return `$$${math}$$`; }
-  });
-  html = html.replace(/%%MATH_INLINE_(\d+)%%/g, (_, i) => {
-    const { math } = mathBlocks[i];
-    try {
-      return window.katex ? katex.renderToString(math, { displayMode: false, throwOnError: false }) : `$${math}$`;
-    } catch { return `$${math}$`; }
-  });
+  const renderMath = (math, display) => {
+    if (!window.katex) return display ? `$$${math}$$` : `$${math}$`;
+    try { return katex.renderToString(math, { displayMode: display, throwOnError: false }); }
+    catch { return display ? `$$${math}$$` : `$${math}$`; }
+  };
+  html = html.replace(/%%MATH_DISPLAY_(\d+)%%/g, (_, i) => renderMath(mathBlocks[i].math, true));
+  html = html.replace(/%%MATH_INLINE_(\d+)%%/g,  (_, i) => renderMath(mathBlocks[i].math, false));
 
   return `<div style="font-size:.92rem;color:var(--muted);line-height:1.9"><p>${html}</p></div>`;
 }
