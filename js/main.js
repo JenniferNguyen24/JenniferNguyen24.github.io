@@ -38,11 +38,9 @@ async function getDefaultBranch(){
   }catch{return 'main';}
 }
 
-/* cache the branch so we don't refetch every call */
-let _branch = null;
+/* always fetch branch fresh — no cache */
 async function branch(){
-  if(!_branch) _branch = await getDefaultBranch();
-  return _branch;
+  return await getDefaultBranch();
 }
 
 /* fetch a JSON file from _data/ */
@@ -205,7 +203,7 @@ async function renderJourney(){
   container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${t('loading')}</p>`;
   const all=await fetchData('journey.json');
   if(!all||!all.length){container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${t('empty_posts')}</p>`;return;}
-  const entries=all.filter(e=>(e.lang||'en')===currentLang||(e.lang||'en')==='both');
+  const entries=all.filter(e=>(e.lang||'en')===currentLang||(e.lang||'en')==='both'||(e.lang||'en')==='en');
   if(!entries.length){container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${t('empty_posts')}</p>`;return;}
   container.innerHTML=entries.map(e=>{
     const desc=currentLang==='vi'?(e.desc_vi||e.desc||''):(e.desc||'');
@@ -267,7 +265,9 @@ async function renderInnerPage(categoryKey){
   }
   list.innerHTML=`<p class="empty-page" style="color:var(--faint)">${t('loading')}</p>`;
   const posts=await fetchPostsForCategory(categoryKey);
-  const filtered=posts.filter(p=>(p.lang||'en')===currentLang||(p.lang||'en')==='both');
+  const langFiltered=posts.filter(p=>(p.lang||'en')===currentLang||(p.lang||'en')==='both');
+  // fallback to EN entries if no posts in current language
+  const filtered=langFiltered.length?langFiltered:posts.filter(p=>(p.lang||'en')==='en'||!p.lang);
   filtered.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
   if(!filtered.length){list.innerHTML=`<p class="empty-page">${t('empty_posts')}</p>`;return;}
   window.__posts=filtered;
@@ -345,7 +345,9 @@ async function renderRecentPosts(){
         const res=await fetch(`https://raw.githubusercontent.com/${gh.owner}/${gh.repo}/${b}/_posts/${f.category}/${f.name}`);
         if(!res.ok) return null;
         const p={...parseFrontMatter(await res.text()),category:f.category,filename:f.name};
-        if((p.lang||'en')!==currentLang&&(p.lang||'en')!=='both') return null;
+        // only filter out if a vi version exists; otherwise show en as fallback
+        if(currentLang==='vi'&&p.lang==='vi') return p;
+        if(currentLang==='vi'&&p.lang&&p.lang!=='en'&&p.lang!=='both') return null;
         return p;
       }catch{return null;}
     }));
