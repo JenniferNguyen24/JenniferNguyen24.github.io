@@ -1,8 +1,4 @@
-* ═══════════════════════════════════════
-   PORTFOLIO — main.js
-   ALL content fetched from GitHub.
-   Only token + language pref in localStorage.
-═══════════════════════════════════════ */
+
 
 /* ── GITHUB CONFIG ── */
 const GH_KEY   = 'jn_gh';
