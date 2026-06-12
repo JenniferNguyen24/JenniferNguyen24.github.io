@@ -5,9 +5,16 @@
 ═══════════════════════════════════════ */
 
 /* ── GITHUB CONFIG ── */
-const GH_KEY  = 'jn_gh';
+const GH_KEY   = 'jn_gh';
 const LANG_KEY = 'jn_lang';
-const loadGH  = () => { try { return JSON.parse(localStorage.getItem(GH_KEY)) || {}; } catch { return {}; } };
+const loadGH   = () => { try { return JSON.parse(localStorage.getItem(GH_KEY)) || {}; } catch { return {}; } };
+
+/* PUBLIC repo info — hardcoded so everyone can read content without a token */
+const REPO_OWNER  = 'JenniferNguyen24';
+const REPO_NAME   = 'JenniferNguyen24.github.io';
+const REPO_BRANCH = 'main';
+const RAW_BASE    = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}`;
+const API_BASE    = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`;
 
 let currentLang = localStorage.getItem(LANG_KEY) || 'en';
 
@@ -45,11 +52,8 @@ async function branch(){
 
 /* fetch a JSON file from _data/ */
 async function fetchData(filename){
-  const gh=loadGH(); if(!gh.owner||!gh.repo) return null;
   try{
-    const b=await branch();
-    // no auth header — raw.githubusercontent.com blocks CORS preflight with Authorization
-    const r=await fetch(`https://raw.githubusercontent.com/${gh.owner}/${gh.repo}/${b}/data/${filename}`);
+    const r=await fetch(`${RAW_BASE}/data/${filename}`);
     if(!r.ok) return null;
     return await r.json();
   }catch{return null;}
@@ -73,19 +77,16 @@ function parseFrontMatter(raw){
 
 /* ── FETCH POSTS ── */
 async function fetchPostsForCategory(category){
-  const apiBase=ghApiBase(); if(!apiBase) return [];
   try{
     const gh=loadGH();
     const headers=gh.token?{'Authorization':`token ${gh.token}`}:{};
-    const b=await branch();
-    const r=await fetch(`${apiBase}/contents/_posts/${category}`,{headers});
+    const r=await fetch(`${API_BASE}/contents/_posts/${category}`,{headers});
     if(!r.ok) return [];
     const files=await r.json();
     const mdFiles=files.filter(f=>f.name.endsWith('.md'));
-    const rawBase=ghRawBase(b);
     const posts=await Promise.all(mdFiles.map(async f=>{
       try{
-        const res=await fetch(`${rawBase}/_posts/${category}/${f.name}`);
+        const res=await fetch(`${RAW_BASE}/_posts/${category}/${f.name}`);
         if(!res.ok) return null;
         return{...parseFrontMatter(await res.text()),category,filename:f.name,sha:f.sha,path:f.path};
       }catch{return null;}
@@ -179,7 +180,7 @@ function toggleLang(){
 /* ── PROFILE (from GitHub _data/profile.json) ── */
 async function renderProfile(){
   const p=await fetchData('profile.json');
-  if(!p) return;
+  if(!p){ setText('hero-name','Jennifer Nguyen'); return; }
 
   const name=p.name||'Jennifer Nguyen';
   setText('hero-name',name);
@@ -259,10 +260,6 @@ async function renderInnerPage(categoryKey){
   setText('page-label',cat.label); setText('page-title',cat.label);
   const subEl=document.getElementById('page-subtitle');
   if(subEl) subEl.textContent=t('page_subtitle_'+categoryKey)||'';
-  const gh=loadGH();
-  if(!gh.owner||!gh.repo){
-    list.innerHTML=`<p class="empty-page">${t('empty_posts')}</p>`; return;
-  }
   list.innerHTML=`<p class="empty-page" style="color:var(--faint)">${t('loading')}</p>`;
   const posts=await fetchPostsForCategory(categoryKey);
   const langFiltered=posts.filter(p=>(p.lang||'en')===currentLang||(p.lang||'en')==='both');
@@ -321,17 +318,13 @@ function renderBodyMD(md){
 async function renderRecentPosts(){
   const container=document.getElementById('recent-posts-list'); if(!container) return;
   const gh=loadGH();
-  if(!gh.owner||!gh.repo){
-    container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${t('empty_posts')}</p>`;return;
-  }
   try{
     const allCats=['stories','math','research','achievements','scholarships','publications'];
     const allFiles=[];
-    const b=await branch();
     await Promise.all(allCats.map(async cat=>{
       try{
         const headers=gh.token?{'Authorization':`token ${gh.token}`}:{};
-        const r=await fetch(`https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/_posts/${cat}`,{headers});
+        const r=await fetch(`${API_BASE}/contents/_posts/${cat}`,{headers});
         if(!r.ok) return;
         const files=await r.json();
         files.filter(f=>f.name.endsWith('.md')).forEach(f=>allFiles.push({...f,category:cat}));
@@ -342,7 +335,7 @@ async function renderRecentPosts(){
     if(!recent.length){container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${t('empty_posts')}</p>`;return;}
     const posts=await Promise.all(recent.map(async f=>{
       try{
-        const res=await fetch(`https://raw.githubusercontent.com/${gh.owner}/${gh.repo}/${b}/_posts/${f.category}/${f.name}`);
+        const res=await fetch(`${RAW_BASE}/_posts/${f.category}/${f.name}`);
         if(!res.ok) return null;
         const p={...parseFrontMatter(await res.text()),category:f.category,filename:f.name};
         // only filter out if a vi version exists; otherwise show en as fallback
