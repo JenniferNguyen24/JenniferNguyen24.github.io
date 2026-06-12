@@ -14,13 +14,24 @@ const readMins = s  => Math.max(1, Math.ceil((s||'').split(/\s+/).length / 200))
 function setText(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; }
 function setHTML(id,v){ const el=document.getElementById(id); if(el) el.innerHTML=v; }
 
-function ghRawBase() {
+function ghRawBase(branch) {
   const {owner,repo}=loadGH(); if(!owner||!repo) return null;
-  return `https://raw.githubusercontent.com/${owner}/${repo}/main`;
+  return `https://raw.githubusercontent.com/${owner}/${repo}/${branch||'main'}`;
 }
 function ghApiBase() {
   const {owner,repo}=loadGH(); if(!owner||!repo) return null;
   return `https://api.github.com/repos/${owner}/${repo}`;
+}
+
+async function getDefaultBranch() {
+  try {
+    const gh=loadGH();
+    const headers=gh.token?{'Authorization':`token ${gh.token}`}:{};
+    const r=await fetch(`${ghApiBase()}`,{headers});
+    if(!r.ok) return 'main';
+    const data=await r.json();
+    return data.default_branch||'main';
+  } catch { return 'main'; }
 }
 
 function parseFrontMatter(raw) {
@@ -43,11 +54,12 @@ async function fetchPostsForCategory(category) {
   try {
     const gh=loadGH();
     const headers=gh.token?{'Authorization':`token ${gh.token}`}:{};
+    const branch=await getDefaultBranch();
     const r=await fetch(`${apiBase}/contents/_posts/${category}`,{headers});
     if(!r.ok) return [];
     const files=await r.json();
     const mdFiles=files.filter(f=>f.name.endsWith('.md'));
-    const rawBase=ghRawBase();
+    const rawBase=ghRawBase(branch);
     const posts=await Promise.all(mdFiles.map(async f=>{
       try{
         const res=await fetch(`${rawBase}/_posts/${category}/${f.name}`);
@@ -198,6 +210,7 @@ async function renderRecentPosts() {
   try {
     const allCats=['stories','math','research','achievements','scholarships','publications'];
     const allFiles=[];
+    const branch=await getDefaultBranch();
     await Promise.all(allCats.map(async cat=>{
       try{
         const headers=gh.token?{'Authorization':`token ${gh.token}`}:{};
@@ -215,7 +228,7 @@ async function renderRecentPosts() {
     }
     const posts=await Promise.all(recent.map(async f=>{
       try{
-        const res=await fetch(`${ghRawBase()}/_posts/${f.category}/${f.name}`);
+        const res=await fetch(`${ghRawBase(branch)}/_posts/${f.category}/${f.name}`);
         if(!res.ok) return null;
         return{...parseFrontMatter(await res.text()),category:f.category,filename:f.name};
       }catch{return null;}
