@@ -30,8 +30,8 @@
 <!-- HERO -->
 <header class="hero">
   <div class="hero-photo-wrap" style="width:200px;height:200px;border-radius:50%;border:4px solid var(--card);box-shadow:0 0 0 1px var(--border-hi),0 12px 48px var(--shadow);overflow:hidden;margin-bottom:1.8rem;position:relative;z-index:1;background:radial-gradient(circle at 60% 35%,#EDD9B8 0%,#D4B483 45%,#B8904A 100%);">
-    <img id="hero-photo-img" src="https://raw.githubusercontent.com/JenniferNguyen24/JenniferNguyen24.github.io/main/photo.jpeg" alt="Jennifer Nguyen" style="width:100%;height:100%;object-fit:cover;display:none"/>
-    <div class="hero-photo-placeholder" id="hero-photo-init" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:3.5rem;color:rgba(255,255,255,0.75)">JN</div>
+    <img id="hero-photo-img" src="https://raw.githubusercontent.com/JenniferNguyen24/JenniferNguyen24.github.io/main/photo.jpeg" alt="Jennifer Nguyen" style="width:100%;height:100%;object-fit:cover;display:block"/>
+    <div class="hero-photo-placeholder" id="hero-photo-init" style="display:none">JN</div>
   </div>
 
   <p class="hero-eyebrow">Personal Site</p>
@@ -75,52 +75,8 @@
 <section class="section" id="journey">
   <p class="section-label">Chapter by chapter</p>
   <h2 class="section-title">My Academic Journey</h2>
-  <div class="timeline">
-
-    <div class="tl-entry">
-      <div class="tl-dot"></div>
-      <div class="tl-card">
-        <p class="tl-period">2019 – 2022</p>
-        <h3 class="tl-institution">Your High School Name</h3>
-        <p class="tl-role">High School Student · Science Track</p>
-        <p class="tl-desc">Describe your high school experience — the subjects you loved, the teachers who shaped you, and the early spark that pointed you toward mathematics and CS.</p>
-        <div class="tl-tags"><span class="tag">Mathematics</span><span class="tag">Physics</span><span class="tag">CS</span></div>
-      </div>
-    </div>
-
-    <div class="tl-entry">
-      <div class="tl-dot"></div>
-      <div class="tl-card">
-        <p class="tl-period">2022</p>
-        <h3 class="tl-institution">National High School Graduation Exam</h3>
-        <p class="tl-role">THPT National Examination</p>
-        <p class="tl-desc">Write about your exam results and how this moment opened the door to university.</p>
-        <div class="tl-tags"><span class="tag">Score: XX.XX</span><span class="tag">Top XX%</span></div>
-      </div>
-    </div>
-
-    <div class="tl-entry">
-      <div class="tl-dot"></div>
-      <div class="tl-card">
-        <p class="tl-period">2022 – 2023 · Year 1</p>
-        <h3 class="tl-institution">Your University</h3>
-        <p class="tl-role">Bachelor of Computer Science · First Year</p>
-        <p class="tl-desc">Freshman year — foundations in algorithms, discrete math, and the first taste of probability theory that would define my direction.</p>
-        <div class="tl-tags"><span class="tag">GPA: X.X</span><span class="tag">Algorithms</span><span class="tag">Probability</span></div>
-      </div>
-    </div>
-
-    <div class="tl-entry">
-      <div class="tl-dot"></div>
-      <div class="tl-card">
-        <p class="tl-period">2023 – 2024 · Year 2</p>
-        <h3 class="tl-institution">Your University</h3>
-        <p class="tl-role">Bachelor of Computer Science · Second Year</p>
-        <p class="tl-desc">Deeper into learning theory and game theory. First research involvement and the beginning of serious mathematical work.</p>
-        <div class="tl-tags"><span class="tag">Learning Theory</span><span class="tag">Game Theory</span><span class="tag">Research</span></div>
-      </div>
-    </div>
-
+  <div class="timeline" id="timeline-container">
+    <!-- populated by main.js from localStorage -->
   </div>
 </section>
 

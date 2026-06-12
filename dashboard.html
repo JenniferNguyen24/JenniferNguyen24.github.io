@@ -287,6 +287,9 @@
     <button class="nav-btn" data-view="posts">
       <span class="nav-btn-icon">📂</span> All posts
     </button>
+    <button class="nav-btn" data-view="journey">
+      <span class="nav-btn-icon">🗺</span> Journey
+    </button>
     <span class="sidebar-label">Setup</span>
     <button class="nav-btn" data-view="connect">
       <span class="nav-btn-icon">🔗</span> GitHub
@@ -375,6 +378,52 @@ For math: use $inline$ or $$block$$ (LaTeX)."></textarea>
           <span id="publish-status" style="font-size:.78rem;color:var(--muted)"></span>
         </div>
       </form>
+    </div>
+
+    <!-- ── VIEW: JOURNEY ── -->
+    <div class="view" id="view-journey">
+      <h1 class="view-title">Academic Journey</h1>
+      <p class="view-sub">Add, edit, and reorder your timeline entries. Changes appear live on the homepage.</p>
+
+      <div id="journey-alert"></div>
+
+      <div style="display:flex;justify-content:flex-end;margin-bottom:1.2rem">
+        <button class="btn btn-primary" id="add-entry-btn">+ Add entry</button>
+      </div>
+
+      <div id="entry-form-wrap" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:1.5rem;margin-bottom:1.5rem">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--ink);margin-bottom:1.2rem" id="entry-form-title">New entry</h3>
+        <form id="entry-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Period *</label>
+              <input class="form-input" type="text" name="period" placeholder="e.g. 2022 – 2023 · Year 1" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tags</label>
+              <input class="form-input" type="text" name="tags" placeholder="GPA: X.X, Research, Python"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Institution / Event *</label>
+            <input class="form-input" type="text" name="institution" placeholder="e.g. VNU University of Engineering and Technology" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Role / Subtitle</label>
+            <input class="form-input" type="text" name="role" placeholder="e.g. Bachelor of Computer Science · Year 2"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" name="desc" rows="4" style="min-height:90px" placeholder="What happened during this period? What did you learn or achieve?"></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="entry-submit-btn">Save entry</button>
+            <button type="button" class="btn btn-ghost" id="entry-cancel-btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="journey-entries-list"></div>
     </div>
 
     <!-- ── VIEW: POSTS ── -->
@@ -698,6 +747,7 @@ function switchView(name) {
   if (name === 'posts') loadPosts();
   if (name === 'connect') updateConnectUI();
   if (name === 'settings') fillProfile();
+  if (name === 'journey') renderJourneyEntries();
 }
 
 /* ═══════════════════════════════════════════
@@ -988,6 +1038,127 @@ document.getElementById('profile-form').addEventListener('submit', e => {
   const saved = document.getElementById('profile-saved');
   saved.style.display = 'inline';
   setTimeout(() => saved.style.display = 'none', 2500);
+});
+
+/* ═══════════════════════════════════════════
+   JOURNEY MANAGEMENT
+═══════════════════════════════════════════ */
+const JOURNEY_KEY = 'jn_journey';
+const DEFAULT_JOURNEY = [
+  { id:'j1', period:'2019 – 2022', institution:'Your High School Name', role:'High School Student · Science Track', desc:'Describe your high school experience — the subjects you loved, the teachers who shaped you, and the early spark that pointed you toward mathematics and CS.', tags:'Mathematics, Physics, CS' },
+  { id:'j2', period:'2022', institution:'National High School Graduation Exam', role:'THPT National Examination', desc:'Write about your exam results and how this moment opened the door to university.', tags:'Score: XX.XX, Top XX%' },
+  { id:'j3', period:'2022 – 2023 · Year 1', institution:'Your University', role:'Bachelor of Computer Science · First Year', desc:'Freshman year — foundations in algorithms, discrete math, and the first taste of probability theory that would define my direction.', tags:'GPA: X.X, Algorithms, Probability' },
+  { id:'j4', period:'2023 – 2024 · Year 2', institution:'Your University', role:'Bachelor of Computer Science · Second Year', desc:'Deeper into learning theory and game theory. First research involvement and the beginning of serious mathematical work.', tags:'Learning Theory, Game Theory, Research' },
+];
+
+function loadJourney() { try { return JSON.parse(localStorage.getItem(JOURNEY_KEY)) || DEFAULT_JOURNEY; } catch { return DEFAULT_JOURNEY; } }
+function saveJourney(j) { localStorage.setItem(JOURNEY_KEY, JSON.stringify(j)); }
+function journeyId() { return 'j' + Date.now().toString(36); }
+
+function renderJourneyEntries() {
+  const list = document.getElementById('journey-entries-list');
+  if (!list) return;
+  const entries = loadJourney();
+  if (!entries.length) { list.innerHTML = '<p style="color:var(--faint);font-style:italic;font-size:.85rem;padding:1rem 0">No entries yet. Click "+ Add entry" to start.</p>'; return; }
+  list.innerHTML = entries.map((e, i) => `
+    <div class="manage-row" data-jid="${e.id}">
+      <div class="manage-info">
+        <div class="manage-title">${escD(e.institution)}</div>
+        <div class="manage-sub">
+          <span>${escD(e.period)}</span>
+          ${e.role ? `<span>${escD(e.role)}</span>` : ''}
+        </div>
+      </div>
+      <div class="manage-actions" style="display:flex;gap:.4rem;align-items:center">
+        ${i > 0 ? `<button class="btn-sm" data-up="${e.id}" title="Move up">↑</button>` : ''}
+        ${i < entries.length-1 ? `<button class="btn-sm" data-down="${e.id}" title="Move down">↓</button>` : ''}
+        <button class="btn-sm" data-jedit="${e.id}">Edit</button>
+        <button class="btn-sm del" data-jdel="${e.id}">Delete</button>
+      </div>
+    </div>`).join('');
+
+  list.querySelectorAll('[data-up]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const j = loadJourney(); const i = j.findIndex(e => e.id === btn.dataset.up);
+      if (i > 0) { [j[i-1], j[i]] = [j[i], j[i-1]]; saveJourney(j); renderJourneyEntries(); }
+    });
+  });
+  list.querySelectorAll('[data-down]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const j = loadJourney(); const i = j.findIndex(e => e.id === btn.dataset.down);
+      if (i < j.length-1) { [j[i], j[i+1]] = [j[i+1], j[i]]; saveJourney(j); renderJourneyEntries(); }
+    });
+  });
+  list.querySelectorAll('[data-jedit]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const e = loadJourney().find(x => x.id === btn.dataset.jedit); if (!e) return;
+      const form = document.getElementById('entry-form');
+      form.dataset.editId = e.id;
+      form.querySelector('[name="period"]').value = e.period || '';
+      form.querySelector('[name="institution"]').value = e.institution || '';
+      form.querySelector('[name="role"]').value = e.role || '';
+      form.querySelector('[name="desc"]').value = e.desc || '';
+      form.querySelector('[name="tags"]').value = e.tags || '';
+      document.getElementById('entry-form-title').textContent = 'Edit entry';
+      document.getElementById('entry-submit-btn').textContent = 'Save changes';
+      document.getElementById('entry-form-wrap').style.display = 'block';
+      document.getElementById('entry-form-wrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    });
+  });
+  list.querySelectorAll('[data-jdel]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!confirm('Delete this entry?')) return;
+      saveJourney(loadJourney().filter(e => e.id !== btn.dataset.jdel));
+      renderJourneyEntries();
+      showJourneyAlert('success', 'Entry deleted.');
+    });
+  });
+}
+
+function showJourneyAlert(type, msg) {
+  const el = document.getElementById('journey-alert');
+  if (!el) return;
+  el.innerHTML = `<div class="alert ${type}" style="margin-bottom:1rem"><span>${msg}</span></div>`;
+  if (type === 'success') setTimeout(() => el.innerHTML = '', 3000);
+}
+
+function escD(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Add entry button
+document.getElementById('add-entry-btn')?.addEventListener('click', () => {
+  const form = document.getElementById('entry-form');
+  form.reset(); delete form.dataset.editId;
+  document.getElementById('entry-form-title').textContent = 'New entry';
+  document.getElementById('entry-submit-btn').textContent = 'Save entry';
+  document.getElementById('entry-form-wrap').style.display = 'block';
+  document.getElementById('entry-form-wrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
+});
+
+document.getElementById('entry-cancel-btn')?.addEventListener('click', () => {
+  document.getElementById('entry-form-wrap').style.display = 'none';
+  document.getElementById('entry-form').reset();
+});
+
+document.getElementById('entry-form')?.addEventListener('submit', e => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const period = fd.get('period')?.trim();
+  const institution = fd.get('institution')?.trim();
+  if (!period || !institution) { showJourneyAlert('error', 'Period and Institution are required.'); return; }
+
+  const j = loadJourney();
+  const editId = e.target.dataset.editId;
+  if (editId) {
+    const i = j.findIndex(x => x.id === editId);
+    if (i !== -1) j[i] = { ...j[i], period, institution, role: fd.get('role')?.trim()||'', desc: fd.get('desc')?.trim()||'', tags: fd.get('tags')?.trim()||'' };
+  } else {
+    j.push({ id: journeyId(), period, institution, role: fd.get('role')?.trim()||'', desc: fd.get('desc')?.trim()||'', tags: fd.get('tags')?.trim()||'' });
+  }
+  saveJourney(j);
+  renderJourneyEntries();
+  document.getElementById('entry-form-wrap').style.display = 'none';
+  e.target.reset();
+  showJourneyAlert('success', editId ? '✓ Entry updated.' : '✓ Entry added.');
 });
 
 /* ═══════════════════════════════════════════

@@ -101,15 +101,7 @@ function renderProfile(){
   const ghEl=document.getElementById('social-github'); if(ghEl&&ghUser){ghEl.href=`https://github.com/${ghUser}`;ghEl.style.display='inline-flex';}
   const liEl=document.getElementById('social-linkedin'); if(liEl&&p.linkedin){liEl.href=`https://linkedin.com/in/${p.linkedin}`;liEl.style.display='inline-flex';}
   const emEl=document.getElementById('social-email'); if(emEl&&p.email){emEl.href=`mailto:${p.email}`;emEl.style.display='inline-flex';}
-  const wrap=document.getElementById('contact-links');
-  if(wrap){
-    const rows=[
-      p.email   &&`<a class="contact-link" href="mailto:${esc(p.email)}">${svgEmail()}<span>${esc(p.email)}</span></a>`,
-      ghUser    &&`<a class="contact-link" href="https://github.com/${esc(ghUser)}" target="_blank" rel="noopener">${svgGithub()}<span>github.com/${esc(ghUser)}</span></a>`,
-      p.linkedin&&`<a class="contact-link" href="https://linkedin.com/in/${esc(p.linkedin)}" target="_blank" rel="noopener">${svgLinkedin()}<span>linkedin.com/in/${esc(p.linkedin)}</span></a>`,
-    ].filter(Boolean);
-    wrap.innerHTML=rows.length?rows.join(''):`<p style="color:var(--faint);font-size:.85rem;font-style:italic;">Set your contact info in the <a href="dashboard.html" style="color:var(--accent)">dashboard</a>.</p>`;
-  }
+  // contact links are hardcoded in HTML — skip dynamic render
 }
 
 async function renderInnerPage(categoryKey){
@@ -175,7 +167,41 @@ function renderBodyMD(md){
   return `<div style="font-size:.92rem;color:var(--muted);line-height:1.9"><p>${html}</p></div>`;
 }
 
-function initNavScroll(){
+/* ── JOURNEY ── */
+const JOURNEY_KEY = 'jn_journey';
+const DEFAULT_JOURNEY = [
+  { id:'j1', period:'2019 – 2022', institution:'Your High School Name', role:'High School Student · Science Track', desc:'Describe your high school experience — the subjects you loved, the teachers who shaped you, and the early spark that pointed you toward mathematics and CS.', tags:'Mathematics, Physics, CS' },
+  { id:'j2', period:'2022', institution:'National High School Graduation Exam', role:'THPT National Examination', desc:'Write about your exam results and how this moment opened the door to university.', tags:'Score: XX.XX, Top XX%' },
+  { id:'j3', period:'2022 – 2023 · Year 1', institution:'Your University', role:'Bachelor of Computer Science · First Year', desc:'Freshman year — foundations in algorithms, discrete math, and the first taste of probability theory that would define my direction.', tags:'GPA: X.X, Algorithms, Probability' },
+  { id:'j4', period:'2023 – 2024 · Year 2', institution:'Your University', role:'Bachelor of Computer Science · Second Year', desc:'Deeper into learning theory and game theory. First research involvement and the beginning of serious mathematical work.', tags:'Learning Theory, Game Theory, Research' },
+];
+
+function loadJourney() {
+  try { return JSON.parse(localStorage.getItem(JOURNEY_KEY)) || DEFAULT_JOURNEY; } catch { return DEFAULT_JOURNEY; }
+}
+function saveJourney(j) { localStorage.setItem(JOURNEY_KEY, JSON.stringify(j)); }
+
+function renderJourney() {
+  const container = document.getElementById('timeline-container');
+  if (!container) return;
+  const entries = loadJourney();
+  if (!entries.length) { container.innerHTML = '<p style="color:var(--faint);font-style:italic;font-size:.88rem">No journey entries yet — add them in the dashboard.</p>'; return; }
+  container.innerHTML = entries.map(e => {
+    const tags = (e.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
+    return `<div class="tl-entry">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <p class="tl-period">${esc(e.period)}</p>
+        <h3 class="tl-institution">${esc(e.institution)}</h3>
+        <p class="tl-role">${esc(e.role)}</p>
+        <p class="tl-desc">${esc(e.desc)}</p>
+        ${tags.length ? `<div class="tl-tags">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+
   const nav=document.querySelector('.nav'); if(!nav) return;
   window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>40),{passive:true});
 }
@@ -260,7 +286,7 @@ async function renderRecentPosts() {
 
 document.addEventListener('DOMContentLoaded',()=>{
   const fy=document.getElementById('footer-year'); if(fy) fy.textContent=new Date().getFullYear();
-  initNavScroll(); initSkillBars(); renderProfile();
+  initNavScroll(); initSkillBars(); renderProfile(); renderJourney();
   renderRecentPosts();
   document.querySelectorAll('.cat-card').forEach(card=>{
     card.addEventListener('keydown',e=>{if(e.key==='Enter')card.click();});
