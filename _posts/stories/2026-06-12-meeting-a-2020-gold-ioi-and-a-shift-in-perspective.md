@@ -76,7 +76,7 @@ It's a little strange to be writing all of this.
 
 Probably because I've relapsed again. It's 1:05 in the morning, and all I can do is sit here and smile at these memories. A while back I asked Yến to find out if he even remembered who I was — because I wanted to try, now that I was finally in a place where I could. Independent. No longer being pushed around. Confident enough. But what came back was that he reacted to Yến's message and said he didn't remember me.
 
-Guess that he just happened to help, without any contemplation, maybe I was the only one who was that desperate back then. Who looked at him and found something like a sliver of light in a room that had gone completely dark. And now that things are finally okay, I still carry those moments around like they're something precious.
+Guess that he just happened to help, without any contemplation, maybe I was the only one who was that desperate back then. Who looked at him and found something like a sliver of light in a room that had gone completely dark. And now that things are finally okay, I still carry those moments around like they're something precious. 
 
 Please don't read this as something buried or unresolved. I genuinely don't know what I felt back then, and I still don't, not entirely. He existed right on the line between friend and someone who just happened to help — without really being either. Always just a little out of reach.
 
