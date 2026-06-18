@@ -337,7 +337,19 @@ function renderBodyMD(md){
     return `%%MATH_INLINE_${idx}%%`;
   });
 
-  // Step 2: escape HTML and apply markdown
+  // Step 1.5: extract raw HTML blocks before escaping
+  const htmlBlocks = [];
+  processed = processed.replace(/<(figure|div|table|iframe)[^>]*>[\s\S]*?<\/\1>/gi, (match) => {
+    const idx = htmlBlocks.length;
+    htmlBlocks.push(match);
+    return `%%HTML_BLOCK_${idx}%%`;
+  });
+  // also preserve single self-closing or inline HTML tags like <img>, <br>
+  processed = processed.replace(/<img[^>]*\/?>/gi, (match) => {
+    const idx = htmlBlocks.length;
+    htmlBlocks.push(match);
+    return `%%HTML_BLOCK_${idx}%%`;
+  });
   let html = esc(processed)
     .replace(/```[\s\S]*?```/g, m=>`<pre style="background:var(--bg-alt);padding:1rem;border-radius:4px;overflow-x:auto;margin-bottom:1rem;font-size:.82rem;font-family:monospace"><code>${m.slice(3,-3).replace(/^[^\n]*\n/,'')}</code></pre>`)
     .replace(/`([^`]+)`/g,'<code style="font-family:monospace;font-size:.85em;background:var(--bg-alt);padding:.1rem .35rem;border-radius:3px">$1</code>')
@@ -349,6 +361,7 @@ function renderBodyMD(md){
     .replace(/\*\*([^*]+)\*\*/g,'<strong style="color:var(--ink);font-weight:500">$1</strong>')
     .replace(/\*([^*]+)\*/g,'<em>$1</em>')
     .replace(/^- (.+)$/gm,'<li style="margin-bottom:.3rem">$1</li>')
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'<img src="$2" alt="$1" style="max-width:100%;border-radius:6px;margin:1rem 0;display:block"/>')
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:2px">$1</a>')
     .replace(/\n\n+/g,'</p><p>');
 
@@ -360,6 +373,7 @@ function renderBodyMD(md){
   };
   html = html.replace(/%%MATH_DISPLAY_(\d+)%%/g, (_, i) => renderMath(mathBlocks[i].math, true));
   html = html.replace(/%%MATH_INLINE_(\d+)%%/g,  (_, i) => renderMath(mathBlocks[i].math, false));
+  html = html.replace(/%%HTML_BLOCK_(\d+)%%/g,   (_, i) => htmlBlocks[i]);
 
   return `<div style="font-size:.92rem;color:var(--muted);line-height:1.9"><p>${html}</p></div>`;
 }
@@ -381,7 +395,7 @@ async function renderRecentPosts(){
       }catch{}
     }));
     allFiles.sort((a,b_)=>b_.name.localeCompare(a.name));
-    const recent=allFiles.slice(0,5);
+    const recent=allFiles.slice(0,10); // fetch more, then re-sort by actual date field
     if(!recent.length){container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${t('empty_posts')}</p>`;return;}
     const posts=await Promise.all(recent.map(async f=>{
       try{
@@ -394,13 +408,16 @@ async function renderRecentPosts(){
         return p;
       }catch{return null;}
     }));
-    const valid=posts.filter(Boolean).slice(0,1);
-    if(!valid.length){container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${t('empty_posts')}</p>`;return;}
+    const valid=posts.filter(Boolean);
+    // sort by actual date field descending, then take 1
+    valid.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+    const top=valid.slice(0,1);
+    if(!top.length){container.innerHTML=`<p style="color:var(--faint);font-style:italic;font-size:.88rem">${t('empty_posts')}</p>`;return;}
     const CAT_LABELS={stories:'Personal Stories',math:'Pure Math',research:'AI Research',achievements:'Achievements',scholarships:'Scholarships',publications:'Publications'};
-    window.__recentPosts=valid;
+    window.__recentPosts=top;
     container.innerHTML=`
       <div class="recent-list">
-        ${valid.map((p,i)=>`
+        ${top.map((p,i)=>`
           <div class="recent-item" data-ridx="${i}" role="button" tabindex="0">
             <span class="recent-item-cat">${CAT_LABELS[p.category]||p.category}</span>
             <div>
