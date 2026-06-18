@@ -15,7 +15,7 @@ tags: ["PAC-learning", "geometry", "generalization"]
 ## 1. Introduction
 <figure style="text-align:center;margin:1.5rem 0">
   <img src="https://raw.githubusercontent.com/JenniferNguyen24/JenniferNguyen24.github.io/main/images/flat_sharp.png" style="max-width:100%;border-radius:6px"/>
-  <figcaption style="font-size:.82rem;color:#7A6E62;margin-top:.5rem;font-style:italic">Your caption here</figcaption>
+  <figcaption style="font-size:.82rem;color:#7A6E62;margin-top:.5rem;font-style:italic">Flat and sharp minima illustration, citing from https://zhuanlan.zhihu.com/p/488198704 </figcaption>
 </figure>
 
 The training of a deep neural network is, at its core, an optimization problem. Given a model with parameters $\theta \in \mathbb{R}^d$ and a dataset $\mathcal{D} = \{(x_i, y_i)\}_{i=1}^n$, we minimize an empirical loss:
