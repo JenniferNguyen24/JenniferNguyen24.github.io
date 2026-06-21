@@ -18,7 +18,7 @@ tags: ["PAC-learning", "geometry", "generalization"]
   <figcaption style="font-size:.82rem;color:#7A6E62;margin-top:.5rem;font-style:italic">Flat and sharp minima illustration, citing from https://zhuanlan.zhihu.com/p/488198704 </figcaption>
 </figure>
 
-The training of a deep neural network is, at its core, an optimization problem. Given a model with parameters $\theta \in \mathbb{R}^d$ and a dataset $\mathcal{D} = \{(x_i, y_i)\}_{i=1}^n$, we minimize an empirical loss:
+The training of a deep neural network is, at its core, a (convex) optimization problem. Given a model with parameters $\theta \in \mathbb{R}^d$ and a dataset $\mathcal{D} = \{(x_i, y_i)\}_{i=1}^n$, we minimize an empirical loss:
 
 $$\mathcal{L}(\theta) = \frac{1}{n} \sum_{i=1}^n \ell(f_\theta(x_i),\, y_i)$$
 
